@@ -1,3 +1,82 @@
-.background-primary{
-    background-color: black;
+@import url("vendor/bootstrap.min.css");
+
+@font-face{
+    font-family: "product-sans";
+    src: url("../assets/fonts/Product-Sans-Regular.ttf");
+}
+
+@font-face{
+    font-family: "product-sans-bold";
+    src: url("../assets/fonts/Product-Sans-Bold.ttf");
+}
+
+@font-face{
+    font-family: "poppins";
+    src: url("../assets/fonts/Poppins-Regular.otf");
+}
+
+body{
+    color: white;
+    font-family: 'product-sans';
+}
+
+.display-1, .display-2, .display-3, .display-4, .display-5 {
+    font-family: 'product-sans-bold';
+}
+
+.display-3 {
+    font-size: 3.2rem;
+}
+
+.display-4 {
+    font-size: 2rem;
+}
+
+.display-5 {
+    font-size: 1.6rem;
+}
+
+.text-primary{
+    color: #e4d60f !important;
+}
+
+a.text-primary:hover{
+    color: #D0EFFF !important;
+    text-decoration: underline;
+}
+
+.bg-light{
+    background-color: white;
+}
+
+/* Buttons */
+.btn {
+    font-family: 'product-sans-bold';
+    font-size: 20px;
+    text-transform: uppercase;
+    border-radius: 0;
+}
+
+.btn-primary {
+    background-color: #e4d60f !important;
+    color: #111111;
+    border: none;
+}
+
+.btn-primary:hover {
+    background-color: #111111 !important;
+}
+
+/* Text Customization */
+.center{
+    text-align: center;
+}
+
+.bold{
+    font-weight: bolder;
+}
+
+/* Navbar */
+a.nav-link{
+    font-size: 1.5rem;
 }
