@@ -76,6 +76,11 @@ a.text-primary:hover{
     font-weight: bolder;
 }
 
+/* Form */
+form{
+    color: black;
+}
+
 /* Navbar */
 a.nav-link{
     font-size: 1.5rem;
