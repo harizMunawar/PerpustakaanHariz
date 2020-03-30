@@ -72,6 +72,10 @@ a.text-primary:hover{
     text-align: center;
 }
 
+.text-dark{
+    color: black;
+}
+
 .bold{
     font-weight: bolder;
 }
@@ -79,6 +83,10 @@ a.text-primary:hover{
 /* Form */
 form{
     color: black;
+}
+
+td:hover{
+    cursor: pointer !important;
 }
 
 /* Navbar */
