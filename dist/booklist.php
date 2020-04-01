@@ -34,14 +34,18 @@
                 </thead>
                 <tbody>
                 <?php
+                    $page = (isset($_GET['page'])) ? $_GET['page'] : 1;
+                    $limit = 5;
+                    $limit_start = ($page - 1) * $limit;
                     $searchword = "";
                     if(isset($_GET['search'])){
                         $searchword = $_GET['search'];
                     }
-                    $sql = "SELECT * FROM buku WHERE idBuku LIKE :param OR judul LIKE :param OR penulis LIKE :param OR idKategori = (SELECT idKategori FROM kategori WHERE kategoriBuku LIKE :param) OR idPenerbit = (SELECT idPenerbit FROM penerbit WHERE nama LIKE :param)";
+                    $sql = "SELECT * FROM buku WHERE idBuku LIKE :param OR judul LIKE :param OR penulis LIKE :param OR idKategori = (SELECT idKategori FROM kategori WHERE kategoriBuku LIKE :param) OR idPenerbit = (SELECT idPenerbit FROM penerbit WHERE nama LIKE :param) LIMIT ".$limit_start.",".$limit;
                     $result = $dbConn -> prepare($sql);
                     $result->bindValue(':param', '%'.$searchword.'%', PDO::PARAM_STR);
                     $result -> execute();
+                    $no = $limit_start + 1;
                     $total = $result -> rowCount();
                     while ($row = $result -> fetch(PDO::FETCH_ASSOC)){
                         echo "<tr data-href='detail.php?id=".$row['idBuku']."' border='0'>";
@@ -53,12 +57,53 @@
                             echo "<td>".$rowforeign['nama']."</td>";
                             echo "<td>".$rowforeign['kategoriBuku']."</td>";
                         }
-                        echo "</tr>";  
+                        echo "</tr>"; 
+                        $no++; 
                     }
                 ?>
                 </tbody>   
-            </table>
+            </table> 
         </div>
+
+        <!-- Pagination -->
+        <footer class="footer">
+            <div class="container">
+                <div class="row">
+                    <div class="offset-5">
+                        <nav aria-label="...">
+                            <ul class="pagination">
+                                <?php
+                                    $sql2 = $dbConn->prepare("SELECT COUNT(*) AS jumlah FROM buku WHERE idBuku LIKE :param OR judul LIKE :param OR penulis LIKE :param OR idKategori = (SELECT idKategori FROM kategori WHERE kategoriBuku LIKE :param) OR idPenerbit = (SELECT idPenerbit FROM penerbit WHERE nama LIKE :param)");
+                                    $sql2->bindValue(':param', '%'.$searchword.'%', PDO::PARAM_STR);
+                                    $sql2->execute();
+                                    $get_jumlah = $sql2->fetch();
+                                    $jumlah_page = ceil($get_jumlah['jumlah'] / $limit);
+
+                                    if ($page == 1) {
+                                        echo "<li class='disabled page-item'><a class='page-link' href='booklist.php?page=1&search=$searchword'>First</a></li>";
+                                        echo "<li class='disabled page-item'><a class='page-link' href='booklist.php?page=1&search=$searchword'>&laquo;</a></li>";
+                                    }
+                                    else {
+                                        $link_prev = ($page > 1) ? $page - 1 : 1;
+                                        echo "<li class='page-item'><a class='page-link' href='booklist.php?page=1&search=$searchword'>First</a></li>";
+                                        echo "<li><a class='page-link' href='booklist.php?page=$link_prev&search=$searchword'>&laquo;</a></li>";
+                                    }
+                                    if ($page == $jumlah_page) {
+                                        echo "<li class='disabled page-item'><a class='page-link' href='#'>&raquo;</a></li>";
+                                        echo "<li class='disabled page-item'><a class='page-link' href='booklist.php?page=$jumlah_page&search=$searchword'>Last</a></li>";
+                                    } 
+                                    else {
+                                        $link_next = ($page < $jumlah_page) ? $page + 1 : $jumlah_page;
+                                        echo "<li><a class='page-link' href='booklist.php?page=$link_next&search=$searchword'>&raquo;</a></li>";
+                                        echo "<li class='page-item'><a class='page-link' href='booklist.php?page=$jumlah_page&search=$searchword'>Last</a></li>";
+                                    }
+                                ?>
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </footer>
         <!--End Of Book's Table-->
 
         <script>

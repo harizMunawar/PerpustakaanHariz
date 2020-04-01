@@ -15,9 +15,15 @@
     src: url("../assets/fonts/Poppins-Regular.otf");
 }
 
+html {
+    position: relative;
+    min-height: 100%;
+}
+
 body{
     color: black;
     font-family: 'product-sans';
+    margin-bottom: 60px;
 }
 
 .display-1, .display-2, .display-3, .display-4, .display-5 {
@@ -102,4 +108,13 @@ a.nav-link:hover{
     font-size: 1.5rem;
     cursor: pointer;
     text-decoration: underline;
+}
+
+/* Footer */
+.footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 60px;
+    line-height: 60px;
 }
