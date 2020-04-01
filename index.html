@@ -3,39 +3,38 @@
   <head>
     <meta charset="UTF-8">    
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">   
-    <script src="js/vendor/jquery/jquery.js"></script>
-    <script src="js/vendor/popper/popper.js"></script>
-    <script src="js/vendor/bootstrap/bootstrap.min.js"></script>    
     <link rel="stylesheet" href="css/vendor/bootstrap/bootstrap.min.css">
     <link rel="stylesheet" href="css/vendor/fontawesome/fontawesome.css">
-    <link rel="stylesheet" href="css/mycss.css">
+    <link rel="stylesheet" href="css/landingpage.css">
     <link rel="shortcut icon" href="assets/images/heavensdoor-icon.png" type="image/x-icon">
     <title>Heaven's Door</title>
   </head>
-  <body class="bg-dark">
-    <!--Main Content-->
-    <div class="row m-0 p-0">
-      <div class="col-md-8 offset-md-2">
-        <h1 class="text-primary display-3 center">
-          WELCOME TO HEAVEN'S DOOR
-        </h1>
+  <body class="text-center">
+    <div class="cover-container d-flex h-100 p-3 mx-auto flex-column">
+      <header class="masthead mb-auto">
+        <div class="inner">
+          <h3 class="masthead-brand">Heaven's Door</h3>
+          <nav class="nav nav-masthead justify-content-center">
+            <a class="nav-link active" href="#">Home</a>
+            <a class="nav-link" href="dist/booklist.php">Student</a>
+            <a class="nav-link" href="dist/login.php">Librarian</a>
+          </nav>
+        </div>
+      </header>
+      <main role="main" class="inner cover mb-auto">
         <center>
-          <img src="assets/images/heavens-door.png" style="width: 25%;" class="img-fluid ${3|rounded-top,rounded-right,rounded-bottom,rounded-left,rounded-circle,|}" alt="">
+          <img src="assets/images/heavensdoor-logo.png" style="width: 25%;" class="img-fluid ${3|rounded-top,rounded-right,rounded-bottom,rounded-left,rounded-circle,|}" alt="">
         </center>
-      </div>
+        <h1 class="cover-heading">Heaven's Door</h1>
+        <p class="lead">Selamat Datang di Heaven's Door. Heaven's Door adalah perpustakaan yang dibuat oleh <a href="https://github.com/harizMunawar">Hariz</a>. Silahkan pilih salah satu pilihan dibawah untuk melanjutkan.</p>
+        <p class="lead">
+          <a href="#" class="btn btn-lg btn-secondary m-2">I'm A Student</a>
+          <a href="#" class="btn btn-lg btn-secondary m-2">I'm A Librarian</a>
+        </p>
+      </main>
     </div>
-    <div class="row m-0 p-0 mt-5">
-      <div class="col-md-4 offset-md-1 mt-3">
-        <center>
-          <a href="dist/booklist.php" type="button" class="btn btn-primary">I'm A Student</a>
-        </center>
-      </div>
-      <div class="col-md-4 offset-md-1 mt-3">
-        <center>
-          <a href="dist/login.php" type="button" class="btn btn-primary">I'm a Librarian</a>
-        </center>
-      </div>
-    </div>
-    <!--End Of Main Content-->
+    <script src="js/vendor/jquery/jquery.js"></script>
+    <script src="js/vendor/popper/popper.js"></script>
+    <script src="js/vendor/bootstrap/bootstrap.min.js"></script>    
   </body>
 </html>

@@ -90,6 +90,17 @@ td:hover{
 }
 
 /* Navbar */
+nav{
+    color: white;
+}
+
 a.nav-link{
     font-size: 1.5rem;
+    color: white !important
+}
+
+a.nav-link:hover{
+    font-size: 1.5rem;
+    cursor: pointer;
+    text-decoration: underline;
 }

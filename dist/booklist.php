@@ -2,7 +2,9 @@
     require_once("config.php");
     require("../snippets/navbar.php");
     $page = "Book List";
-    $navitem = array();
+    $navitem = array(
+        'index' => array('text'=>'Back', 'url'=>'../index.html'),
+    );
 ?>
 <!DOCTYPE html>
 <html lang="en">

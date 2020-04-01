@@ -18,12 +18,8 @@
                         <div class=\"collapse navbar-collapse\" id=\"collapsibleNavId\">
                             <ul class=\"navbar-nav ml-auto\">";
                                 foreach($items as $item) {
-                                    $selected = (isset($_GET['p'])) && $_GET['p'] == $key ? 'selected' : null;
-                                    if ($selected) {
-                                        $html .= "<li class='nav-item active'><a class=\"nav-link active\" href='{$item['url']}'>{$item['text']}</a></li>\n";    
-                                    }else{
-                                        $html .= "<li class='nav-item'><a class=\"nav-link\" href='{$item['url']}'>{$item['text']}</a></li>\n";
-                                    }                                    
+                                        $html .= "<li class='nav-item active'><a class=\"nav-link active\" href='{$item['url']}'>{$item['text']}</a></li>\n";
+                                        // $html .= "<li class='nav-item'><a class=\"nav-link\" href='{$item['url']}'>{$item['text']}</a></li>\n";      
                                 }
             $html .= "      </ul>
                         </div>";
