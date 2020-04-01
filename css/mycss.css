@@ -54,7 +54,6 @@ a.text-primary:hover{
     font-family: 'product-sans-bold';
     font-size: 20px;
     text-transform: uppercase;
-    border-radius: 0;
 }
 
 .btn-primary {

@@ -6,12 +6,13 @@
         'index' => array('text'=>'Back', 'url'=>'../index.html'),
     );
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
     <head>
         <?php echo file_get_contents("../snippets/header.html"); ?>
-        <title>Heaven's Door</title>
     </head>
+
     <body>
         <!--Navbar-->
         <?php echo CNavigation::GenerateMenu($page, $navitem); ?>
@@ -29,13 +30,6 @@
                         <label for="inputPassword">Password</label>
                         <input required type="password" class="form-control" name="inputPassword" placeholder="Password">
                     </div>
-                    <div class="form-group">
-                        <label for="inputRole">Select Your Role</label>
-                        <select class="form-control" name="inputRole">
-                            <option>Librarian</option>
-                            <option>Admin</option>
-                        </select>
-                    </div>
                     <input required type="submit" class="btn btn-dark mt-2" name="submit" value="Submit">
                 </form>
             </div>
@@ -43,19 +37,19 @@
         <!--End Of Form-->
     </body>
 </html>
+
 <?php
     if (isset($_POST['submit'])) {
         $username = $_POST['inputUsername'];
         $password = $_POST['inputPassword'];
-        $role = $_POST['inputRole'];
-
         $check=$dbConn->prepare("SELECT * FROM login WHERE username=:uname AND password=:upassword");
         $check->execute(array(':uname'=>$username, ':upassword'=>$password));
         $row=$check->fetch(PDO::FETCH_ASSOC);
         if($check->rowCount() > 0){
+            $role=$row['hakUser'];              
             if($role=='Admin'){
                 header("Location: admin.php");
-            }else{
+            }else if($role=='Librarian'){
                 header("Location: librarian.php");
             }
         }else{

@@ -6,19 +6,22 @@
         'index' => array('text'=>'Back', 'url'=>'../index.html'),
     );
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
     <head>
         <?php echo file_get_contents("../snippets/header.html"); ?>
-        <title>Heaven's Door</title>
     </head>
+
     <body>
         <!--Navbar-->
         <?php echo CNavigation::GenerateMenu($page, $navitem); ?>
         <!--End Of Navbar-->
+
         <!--Book's Table-->
         <div class="container-fluid">
             <h1 class="display-3 text-dark mt-5">Available Book List</h1>
+            <div class="display-5 text-dark">Click the book for more detail</div>
             <table class="table table-hover mt-5">
                 <thead class="thead-dark">
                     <tr>
@@ -31,8 +34,13 @@
                 </thead>
                 <tbody>
                 <?php
-                    $sql = "SELECT * FROM buku";
+                    $searchword = "";
+                    if(isset($_GET['search'])){
+                        $searchword = $_GET['search'];
+                    }
+                    $sql = "SELECT * FROM buku WHERE idBuku LIKE :param OR judul LIKE :param OR penulis LIKE :param OR idKategori = (SELECT idKategori FROM kategori WHERE kategoriBuku LIKE :param) OR idPenerbit = (SELECT idPenerbit FROM penerbit WHERE nama LIKE :param)";
                     $result = $dbConn -> prepare($sql);
+                    $result->bindValue(':param', '%'.$searchword.'%', PDO::PARAM_STR);
                     $result -> execute();
                     $total = $result -> rowCount();
                     while ($row = $result -> fetch(PDO::FETCH_ASSOC)){
@@ -45,7 +53,6 @@
                             echo "<td>".$rowforeign['nama']."</td>";
                             echo "<td>".$rowforeign['kategoriBuku']."</td>";
                         }
-                        echo "<input hidden type='submit' name='submit' value='View Detail'>";
                         echo "</tr>";  
                     }
                 ?>
