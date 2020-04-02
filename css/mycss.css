@@ -1,4 +1,4 @@
-@import url("vendor/bootstrap.min.css");
+@import url("vendor/bootstrap/bootstrap.min.css");
 
 @font-face{
     font-family: "product-sans";
@@ -20,14 +20,26 @@ html {
     min-height: 100%;
 }
 
+.bg-gray{
+    background-color: #333 !important;
+}
+
+.bg-light{
+    background-color: rgb(133, 133, 133);
+}
+
 body{
-    color: black;
-    font-family: 'product-sans';
+    height: 100%;
+    font-family: 'poppins';
     margin-bottom: 60px;
 }
 
+.thead{
+    max-width: 100rem;
+}
+
 .display-1, .display-2, .display-3, .display-4, .display-5 {
-    font-family: 'product-sans-bold';
+    font-family: 'product-sans';
 }
 
 .display-3 {
@@ -43,16 +55,12 @@ body{
 }
 
 .text-primary{
-    color: #e4d60f !important;
+    color: #ffc107 !important;
 }
 
 a.text-primary:hover{
-    color: #D0EFFF !important;
+    color: #c89600 !important;
     text-decoration: underline;
-}
-
-.bg-light{
-    background-color: white;
 }
 
 /* Buttons */
@@ -78,7 +86,7 @@ a.text-primary:hover{
 }
 
 .text-dark{
-    color: black;
+    color: #333;
 }
 
 .bold{
@@ -87,7 +95,8 @@ a.text-primary:hover{
 
 /* Form */
 form{
-    color: black;
+    color: #333;
+    font-family: 'product-sans';
 }
 
 td:hover{
@@ -117,4 +126,45 @@ a.nav-link:hover{
     width: 100%;
     height: 60px;
     line-height: 60px;
+}
+
+/* Breadcrumbs */
+.breadcrumb{
+    margin-top: -1.7rem;
+    background-color: rgb(95, 95, 95);
+    border-radius: 0%;
+}
+
+.breadcrumb-item{
+    color: rgb(245, 245, 245) !important;
+}
+
+li a{
+    color: rgb(190, 190, 190);
+}
+
+li a:hover{
+    color: white;
+}
+
+/* Pagination */
+.disabled .page-link{
+    color: rgb(95, 95, 95) !important;
+}
+.page-link{
+    font-family: 'product-sans-bold';
+    color: #ffc107 !important;
+}
+
+/* Card */
+.card-deck .card {
+    margin-bottom: 0;
+}
+
+.card-header{
+    padding: 5px;
+}
+
+.btn-card{
+    bottom: 0;
 }

@@ -2,9 +2,6 @@
     require_once("config.php");
     require("../snippets/navbar.php");
     $page = "Book List";
-    $navitem = array(
-        'index' => array('text'=>'Back', 'url'=>'../index.html'),
-    );
 ?>
 
 <!DOCTYPE html>
@@ -15,15 +12,24 @@
 
     <body>
         <!--Navbar-->
-        <?php echo CNavigation::GenerateMenu($page, $navitem); ?>
+        <?php echo CNavigation::GenerateMenu($page); ?>
         <!--End Of Navbar-->
+
+        <!-- Breadcrumbs -->
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item" aria-current="page"><a href="../index.html">Home</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Book List</li>
+            </ol>
+        </nav>
+        <!-- End Of Breadcrumbs -->
 
         <!--Book's Table-->
         <div class="container-fluid">
             <h1 class="display-3 text-dark mt-5">Available Book List</h1>
             <div class="display-5 text-dark">Click the book for more detail</div>
-            <table class="table table-hover mt-5">
-                <thead class="thead-dark">
+            <table class="table table-hover mt-4">
+                <thead class="bg-gray text-light thead">
                     <tr>
                         <th scope="col">Id Buku</th>
                         <th scope="col">Judul</th>
@@ -48,7 +54,7 @@
                     $no = $limit_start + 1;
                     $total = $result -> rowCount();
                     while ($row = $result -> fetch(PDO::FETCH_ASSOC)){
-                        echo "<tr data-href='detail.php?id=".$row['idBuku']."' border='0'>";
+                        echo "<tr class='items' data-href='detail.php?id=".$row['idBuku']."' border='0'>";
                         echo "<td name='idBuku' value=".$row['idBuku'].">".$row['idBuku']."</td>";
                         echo "<td>".$row['judul']."</td>";
                         echo "<td>".$row['penulis']."</td>";
@@ -64,11 +70,12 @@
                 </tbody>   
             </table> 
         </div>
+        <!--End Of Book's Table-->
 
         <!-- Pagination -->
         <footer class="footer">
             <div class="container">
-                <div class="row">
+                <div class="row container">
                     <div class="offset-5">
                         <nav aria-label="...">
                             <ul class="pagination">
@@ -104,7 +111,7 @@
                 </div>
             </div>
         </footer>
-        <!--End Of Book's Table-->
+        <!--End Of Pagination-->
 
         <script>
             $(document).ready(function() {
