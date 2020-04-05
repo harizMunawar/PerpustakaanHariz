@@ -29,7 +29,6 @@ html {
 }
 
 body{
-    height: 100%;
     font-family: 'poppins';
     margin-bottom: 60px;
 }
@@ -167,4 +166,8 @@ li a:hover{
 
 .btn-card{
     bottom: 0;
+}
+
+.right{
+    float: right;
 }

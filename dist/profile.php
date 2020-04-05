@@ -1,13 +1,17 @@
 <?php
     require_once("config.php");
+    session_start();
+    if (!$_SESSION['login']) {
+        header("Location: login.php");
+    }
     require("../snippets/navbar.php");
     $page = "Profile Edit";
-    $sql = "SELECT * FROM pustakawan WHERE pustakawan.idPustakawan=".$_GET['id'];
+    $sql = "SELECT * FROM pustakawan WHERE pustakawan.idPustakawan=".$_SESSION['id'];
     $result = $dbConn -> prepare($sql);
     $result -> execute();
     $librarian=$result->fetch(PDO::FETCH_ASSOC);
-    $role = $_GET['role'];
-    $id = $_GET['id'];
+    $role = $_SESSION['role'];
+    $id = $_SESSION['id'];
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -26,7 +30,7 @@
             <ol class="breadcrumb">
                 <li class="breadcrumb-item" aria-current="page"><a href="../index.html">Home</a></li>
                 <li class="breadcrumb-item" aria-current="page"><a href="login.php">Login</a></li>
-                <li class="breadcrumb-item" aria-current="page"><a class="text-capitalize" <?php echo "href='$role.php?id=$id'>Dashboard</a></li>"?>
+                <li class="breadcrumb-item" aria-current="page"><a class="text-capitalize" <?php echo "href='admin.php?role=$role&id=$id'>Dashboard</a></li>"?>
                 <li class="breadcrumb-item active" aria-current="page">Edit Profile</li>
                 
             </ol>

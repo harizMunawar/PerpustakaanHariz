@@ -44,7 +44,6 @@
                         <label for="inputPassword">Password</label>
                         <input required type="password" class="form-control" name="password" placeholder="Password">
                     </div>
-                    <input hidden type="text" class="form-control" name="id">
                     <input required type="submit" class="btn btn-dark mt-2" name="submit" value="Submit">
                     <div class="mt-2"><a class="" href="../index.html">Back To Home</a></div>
                 </form>
@@ -62,11 +61,11 @@
         $check->execute(array(':uname'=>$username, ':upassword'=>$password));
         $row=$check->fetch(PDO::FETCH_ASSOC);
         if($check->rowCount() > 0){
-            if($row['hakUser']=='Admin'){
-                header("Location: admin.php?id=".$row['idPustakawan']);
-            }else if($row['hakUser']=='Librarian'){
-                header("Location: librarian.php?id=".$row['idPustakawan']);
-            }
+            session_start();
+            $_SESSION["role"] = $row['hakUser'];
+            $_SESSION["id"] = $row['idPustakawan'];
+            $_SESSION["login"] = TRUE;
+            header("Location: admin.php");
         }
     }
 ?>

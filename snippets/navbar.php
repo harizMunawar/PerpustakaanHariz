@@ -17,23 +17,27 @@
                         <div class='collapse navbar-collapse' id='collapsibleNavId'>";
             if(basename($_SERVER['PHP_SELF']) == 'booklist.php') {
                 $html .="   <form method='get' action='".basename($_SERVER['PHP_SELF'])."' class='form-inline ml-auto mt-md-0'>
-                                <input class='form-control mr-sm-2' type='text' name='search' placeholder='Search'>
-                                <button class='btn btn-outline-warning my-2 my-sm-0' type='submit'>Search</button>
+                                <div>
+                                    <input class='form-control mr-sm-2' type='text' name='search' placeholder='Search'>
+                                    <button class='btn btn-outline-warning my-2 my-sm-0' type='submit'>Search</button>
+                                </div>
                             </form>";
-                }
-            if(basename($_SERVER['PHP_SELF']) == 'admin.php' || basename($_SERVER['PHP_SELF']) == 'librarian.php') {
-                if (basename($_SERVER['PHP_SELF']) == 'admin.php') {
-                    $role = 'admin';
-                }else {
-                    $role = 'librarian';
-                }
-                $id = $_GET['id'];
+            }
+            if(basename($_SERVER['PHP_SELF']) == 'admin.php') {                
                 $html .="   <div class='ml-auto mt-md-0'>
-                                <a role='button' href='profile.php?role=$role&id=$id' class='btn btn-outline-warning my-2 my-sm-0' type='submit'>Edit Profile</a>
-                                <a role='button' href='login.php' class='btn btn-danger my-2 my-sm-0' type='submit'>Logout</a>
-                            </div>";
+                                <a role='button' href='profile.php' class='btn btn-outline-warning my-2 my-sm-0' type='submit'>Edit Profile</a>";
+            }
+            if(isset($_SESSION['login']) && $_SESSION['login']){
+                if(basename($_SERVER['PHP_SELF']) == 'booklist.php'){
+                    $mlstyle = "2";
+                }else {
+                    $mlstyle = "auto";
+                }
+                $html .="       <a role='button' href='logout.php' class='btn btn-danger my-2 my-sm-0 ml-$mlstyle' type='submit'>Logout</a>";
+                            
             }                 
-            $html .= "  </div>
+            $html .= "      </div>
+                        </div>
                     </nav>\n";
             return $html;
         }

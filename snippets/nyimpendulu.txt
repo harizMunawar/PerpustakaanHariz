@@ -1,0 +1,47 @@
+function array_flatten(array $multiDimArray): array {
+    $flatten = [];
+
+    $singleArray = array_map(function($arr) use (&$flatten) {
+        $flatten = array_merge($flatten, $arr);
+    }, $multiDimArray);
+
+    return $flatten;
+}
+
+// Realtime Validation
+    var idData = <?php echo json_encode($arrayId); ?>;
+    var found;
+    var values = Object.keys(idData).map(function(key){
+        return idData[key];
+    });
+    function CustomValidation(input) {
+        this.invalidities = [];
+    }
+
+    CustomValidation.prototype = {
+        addInvalidity: function(message) {
+            this.invalidities.push(message);
+        },  
+        getInvalidities: function() {
+            return this.invalidities.join('. \n');
+        },
+        checkValidity: function(input) {
+            found = Object.keys(values).filter(function(key) {
+                return idData[key] === input;
+            });
+            if(found.length){
+                var element = document.querySelector('#inputId');
+                element.classList.add("is-invalid");
+                element.classList.remove("is-valid");
+            } else {
+                var element = document.querySelector('#inputId');
+                element.classList.add("is-valid");
+                element.classList.remove("is-invalid");
+            }
+        },
+    };
+    var idInput = document.getElementById('inputId');
+    idInput.CustomValidation = new CustomValidation();
+    idInput.addEventListener("keyup", function(){
+        idInput.CustomValidation.checkValidity(this);
+})
