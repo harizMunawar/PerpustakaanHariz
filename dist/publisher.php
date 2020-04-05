@@ -33,9 +33,6 @@
         <title>Heaven's Door</title>
     </head>
     <body>
-        <!-- Importing Modal Form -->
-        <!-- <?php echo file_get_contents("modalform.php"); ?> -->
-
         <!--Navbar-->
         <?php echo CNavigation::GenerateMenu($pageName); ?>
         <!--End Of Navbar-->
@@ -96,7 +93,7 @@
                         </div>
                         <form action="publisher.php" method="POST">
                             <div class="modal-body">   
-                                <input type="text" class="form-control" name="addId" id="inputId" value="<?php echo $newId?>">
+                                <input hidden type="text" class="form-control" name="addId" id="inputId" value="<?php echo $newId?>">
                                 <div class="form-group">
                                     <label for="inputName">Publisher's Name</label>
                                     <input required type="text" class="form-control" name="addName">
@@ -136,7 +133,7 @@
                             </button>
                         </div>
                         <form action="" method="POST" id="deleteForm">
-                            <input type="text" class="form-control" name="deleteId" id="id">
+                            <input hidden type="text" class="form-control" name="deleteId" id="id">
                             <fieldset disabled="disabled">
                                 <div class="modal-body">                                       
                                     <div class="form-group">
@@ -179,7 +176,7 @@
                             </button>
                         </div>
                         <form action="" method="POST" id="deleteForm">
-                            <input type="text" class="form-control" name="editId" id="editid">
+                            <input hidden type="text" class="form-control" name="editId" id="editid">
                                 <div class="modal-body">                                       
                                     <div class="form-group">
                                         <label for="inputName">Publisher's Name</label>

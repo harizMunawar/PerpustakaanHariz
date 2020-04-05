@@ -54,7 +54,7 @@
     </head>
     <body>
         <!--Navbar-->
-        <?php echo CNavigation::GenerateMenu($page, $userId); ?>
+        <?php echo CNavigation::GenerateMenu($page); ?>
         <!--End Of Navbar-->
 
         <!-- Breadcrumbs -->
@@ -197,14 +197,6 @@
 </html>
 
 <?php
-    function imageResize($imageSrc,$imageWidth,$imageHeight) {
-        $newImageWidth =150;
-        $newImageHeight =225;
-        $newImageLayer=imagecreatetruecolor($newImageWidth,$newImageHeight);
-        imagecopyresampled($newImageLayer,$imageSrc,0,0,0,0,$newImageWidth,$newImageHeight,$imageWidth,$imageHeight);
-        return $newImageLayer;
-    }
-
     if (isset($_POST['submit']) && $action != "delete") {
         $action = $_GET['action'];
         $id = $_POST['id'];
@@ -213,26 +205,30 @@
         $category = $_POST['category'];
         $publisher = $_POST['publisher'];
         $stock = $_POST['stock'];
-        $synopsis = $_POST['synopsis'];        
+        $synopsis = $_POST['synopsis'];
+
         if(!empty($_FILES['image'])){
             $image_file = $_FILES['image']['name'];                
             $type = $_FILES['image']['type'];
             $size = $_FILES['image']['size'];
             $temp = $_FILES['image']['tmp_name'];    
-            $path = "../upload/".$image_file;           
-            if($action == 'edit'){
-                $oldImage = $_POST['oldImage'];
-                unlink("../upload/".$oldImage);
-            }
-                               
-            if (!file_exists($path) || $action != "edit") {
+            $path = "../upload/".$image_file;          
+
+            if (!file_exists($path) || $action == "edit") {
+
+                if($action == "edit" && !file_exists($path)){
+                    $oldImage = $_POST['oldImage'];
+                    unlink("../upload/".$oldImage);
+                }
                 if ($size < 5000000) {                    
                     if ($action == "add"){
                         $sql = "INSERT INTO buku(idBuku, idKategori, judul, idPenerbit, penulis, qty, image, sinopsis) values(:fid,:fkategori,:fjudul,:fpenerbit,:fpenulis,:fqty,:fimage,:fsinopsis)";                        
                     }
-                    if ($action == "edit"){
+                    if ($action == "edit" && !file_exists($path)){
                         $sql = "UPDATE buku SET idKategori=:fkategori, judul=:fjudul, idPenerbit=:fpenerbit, penulis=:fpenulis, qty=:fqty, image=:fimage, sinopsis=:fsinopsis WHERE idBuku=:fid";
-                    }
+                    } else if ($action == "edit" && file_exists($path)){
+                        $sql = "UPDATE buku SET idKategori=:fkategori, judul=:fjudul, idPenerbit=:fpenerbit, penulis=:fpenulis, qty=:fqty, sinopsis=:fsinopsis WHERE idBuku=:fid";
+                    }          
                     move_uploaded_file($temp, "../upload/".$image_file);
                     $query = $dbConn->prepare($sql);
                     $query ->bindParam(':fid',$id);     
@@ -240,8 +236,10 @@
                     $query ->bindParam(':fjudul',$title);
                     $query ->bindParam(':fpenerbit',$publisher);
                     $query ->bindParam(':fpenulis',$writer);
-                    $query ->bindParam(':fqty',$stock);
-                    $query ->bindparam(':fimage',$image_file);
+                    $query ->bindParam(':fqty',$stock);       
+                    if (!($action == "edit" && file_exists($path))){
+                        $query ->bindparam(':fimage',$image_file);
+                    }                                        
                     $query ->bindParam(':fsinopsis',$synopsis);
 
                     if ($query->execute()) {
@@ -288,8 +286,3 @@
         }
     }
 ?>
-
-<script>
-    a = document.getElementById('customImage');
-    b = document.getElementById('imageCard');
-</script>

@@ -15,10 +15,13 @@
         $next = $id+1;
         $prev = $id-1;        
     }
-    $selectForeign = "SELECT penerbit.nama, kategori.kategoriBuku FROM penerbit, kategori WHERE idPenerbit=".$row['idPenerbit']." AND idKategori=".$row['idKategori'];
+    $selectForeign = "SELECT penerbit.nama, penerbit.alamat, penerbit.phone, penerbit.email, kategori.kategoriBuku FROM penerbit, kategori WHERE idPenerbit=".$row['idPenerbit']." AND idKategori=".$row['idKategori'];
     foreach ($dbConn->query($selectForeign) as $rowforeign) {
-        $category = $rowforeign['kategoriBuku'];
+        $category = $rowforeign['kategoriBuku'];        
         $publisher = $rowforeign['nama'];
+        $pubaddress = $rowforeign['alamat'];
+        $pubphone = $rowforeign['phone'];
+        $pubemail = $rowforeign['email'];
     }
     $page = $row['judul']." Detail";
 ?>
@@ -63,7 +66,7 @@
                     <div class="display-3"><?php echo $title;?></div>
                     <small class="text-muted">Writer: <?php echo $writer;?></small>
                     <div class="mt-2">
-                        <?php echo $title;?> Is A Book That Was Published By <a href=""><?php echo $publisher;?></a>. The Category Of This Book Is <?php echo $category;?>
+                        <?php echo $title;?> Is A Book That Was Published By <a href="" data-toggle="modal" data-target="#publisherViewForm"><?php echo $publisher;?></a>. The Category Of This Book Is <?php echo $category;?>
                     </div>
                     <div class="mt-2">
                         Current Available Stock: <?php echo $stock;?>
@@ -80,5 +83,45 @@
             </div>
         </div>
         <!-- End Of Main Content -->
+
+        <!-- View Publisher Modal -->
+        <div class="modal fade" id="publisherViewForm" tabindex="-1" role="dialog" aria-labelledby="modalTitle" aria-hidden="true">
+            <div class="container-fluid">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class=" text-capitalize modal-title" id="modalTitle">Publisher Detail</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <form id="detailForm">
+                            <input hidden type="text" class="form-control" name="Id" id="id">
+                            <fieldset disabled="disabled">
+                                <div class="modal-body">                                       
+                                    <div class="form-group">
+                                        <label for="inputName">Publisher's Name</label>
+                                        <input required type="text" class="form-control" name="Name" id="name" value="<?php echo $publisher?>">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="inputAddress">Publisher's Address</label>
+                                        <input required type="text" class="form-control" name="Address" id="address" value="<?php echo $pubaddress?>">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="inputPhone">Publisher's Phone Number</label>
+                                        <input required type="tel" class="form-control" name="Phone" id="phone" value="<?php echo $pubphone?>">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="inputEmail">Publisher's Email Address</label>
+                                        <input required type="email" class="form-control" name="Email" id="email" value="<?php echo $pubemail?>">
+                                    </div>
+                                </div>
+                            </fieldset>
+                        </form>
+                    </div>                
+                </div>
+            </div>
+        </div>
+        <!-- End Of View Publisher Modal -->
     </body>
 </html>

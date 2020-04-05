@@ -72,18 +72,31 @@
                     </div>
                 </div>
 
-                <?php if ($role == 'Admin') {?>
+                <?php 
+                    if ($role == 'Admin') {
+                        $administrator = $dbConn ->prepare("SELECT * FROM login, pustakawan WHERE login.idPustakawan = pustakawan.idPustakawan ORDER BY nama");
+                        $administrator -> execute();
+                        $totalAdministrator = $administrator -> rowCount();
+
+                        $admin = $dbConn ->prepare("SELECT * FROM login, pustakawan WHERE login.idPustakawan = pustakawan.idPustakawan AND login.hakUser = 'Admin' ORDER BY nama");
+                        $admin -> execute();
+                        $totalAdmin = $admin -> rowCount();
+
+                        $librarian = $dbConn ->prepare("SELECT * FROM login, pustakawan WHERE login.idPustakawan = pustakawan.idPustakawan AND login.hakUser = 'Librarian' ORDER BY nama");
+                        $librarian -> execute();
+                        $totalLibrarian = $librarian -> rowCount();
+                ?>
+
                 <div class="card box-shadow">
                     <div class="card-header bg-gray text-white">
-                        <a href="user.php" class="text-white display-5 my-0 font-weight-normal stretched-link">Manage Librarian</a>
+                        <a href="admin.php" class="text-white display-5 my-0 font-weight-normal stretched-link">Manage Librarian</a>
                     </div>
                     <div class="card-body">
                         <h1 class="card-title pricing-card-title"><i class="fa fa-user-circle" aria-hidden="true"></i></h1>
                         <ul class="list-unstyled mt-2 mb-2">
-                        <li>20 users included</li>
-                        <li>10 GB of storage</li>
-                        <li>Priority email support</li>
-                        <li>Help center access</li>
+                        <li><?php echo $totalAdministrator?> Total Administrator</li>
+                        <li><?php echo $totalAdmin?> Admin</li>
+                        <li><?php echo $totalLibrarian?> Librarian</li>                        
                         </ul>
                     </div>
                 </div>
@@ -106,6 +119,12 @@
                 </div>
                 <?php }?>
                 
+                <!-- Manage Publisher -->
+                <?php
+                    $publisher = $dbConn -> prepare("SELECT * FROM penerbit");
+                    $publisher -> execute();
+                    $totalPublisher = $publisher -> rowCount();
+                ?>
                 <div class="card box-shadow">
                     <div class="card-header bg-gray text-white">
                         <a href="publisher.php" class="text-white display-5 my-0 font-weight-normal stretched-link">Manage Publisher</a>
@@ -113,9 +132,7 @@
                     <div class="card-body">
                         <h1 class="card-title pricing-card-title"><i class="fa fa-podcast" aria-hidden="true"></i></h1>
                         <ul class="list-unstyled mt-2 mb-2">
-                        <li>30 users included</li>
-                        <li>15 GB of storage</li>
-                        <li>Phone and email support</li>
+                        <li><?php echo $totalPublisher?> Registered Publisher</li>
                         </ul>
                     </div>
                 </div>

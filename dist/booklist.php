@@ -82,7 +82,7 @@
                     $total = $result -> rowCount();
                     while ($row = $result -> fetch(PDO::FETCH_ASSOC)){
                         echo "<tr class='items' data-href='detail.php?id=".$row['idBuku']."' border='0'>";   
-                        echo "<th class='d-none d-md-table-cell' name='idBuku' value=".$row['idBuku']."><img class='img-thumbnail img-fluid' src='../upload/".$row['image']."'></th>";                     
+                        echo "<th class='d-none d-md-table-cell' style='max-width: 200px;' name='idBuku' value=".$row['idBuku']."><img class='img-thumbnail img-fluid' src='../upload/".$row['image']."'></th>";                     
                         echo "<td>".$row['judul']."</td>";
                         echo "<td>".$row['penulis']."</td>";
                         $selectForeign = "SELECT penerbit.nama, kategori.kategoriBuku FROM penerbit, kategori WHERE idPenerbit=".$row['idPenerbit']." AND idKategori=".$row['idKategori'];
