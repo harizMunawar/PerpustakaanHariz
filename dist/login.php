@@ -65,7 +65,7 @@
             $_SESSION["role"] = $row['hakUser'];
             $_SESSION["id"] = $row['idPustakawan'];
             $_SESSION["login"] = TRUE;
-            header("Location: admin.php");
+            header("Location: dashboard.php");
         }
     }
 ?>

@@ -62,7 +62,7 @@
             <ol class="breadcrumb">
                 <li class="breadcrumb-item" aria-current="page"><a href="../index.html">Home</a></li>
                 <li class="breadcrumb-item" aria-current="page"><a href="login.php">Login</a></li>
-                <li class="breadcrumb-item" aria-current="page"><?php echo "<a href='admin.php?role=$role&id=$userId'>Dashboard</a></li>";?>
+                <li class="breadcrumb-item" aria-current="page"><?php echo "<a href='dashboard.php?role=$role&id=$userId'>Dashboard</a></li>";?>
                 <li class="breadcrumb-item" aria-current="page"><a href="booklist.php">Book List</a></li>
                 <li class="breadcrumb-item active" aria-current="page"><?php echo $buttonText?> Book</li>
             </ol>
@@ -88,7 +88,7 @@
                         <div class="col-4">
                             <div class="card">
                                 <img src="<?php if($action!='add')echo "../upload/".$data['image'];else echo "../assets/images/default.jpg";?>" <?php if($action!='add')echo "style=height:400px";?> class="card-img-top" id="imageCard" name="imagecard">
-                                <?php if($action=='edit'){ echo $imagecard;?>
+                                <?php if($action=='edit'){?>
                                     <input hidden type="text" name="oldImage" value="<?php echo $data['image'];?>">
                                 <?php }?>
                                 <div class="card-body p-0">
@@ -108,7 +108,7 @@
                                 <!-- Title Field -->
                                 <div class="col">
                                     <div class="form-group">
-                                        <label for="inputId">Book's Title</label>
+                                        <label for="inputTitle">Book's Title</label>
                                         <input required type="text" class="form-control" name="title" id="inputTitle" placeholder='Enter Title' value="<?php if($action!='add')echo $data['judul'];?>">
                                     </div>
                                 </div>
@@ -213,52 +213,27 @@
         $category = $_POST['category'];
         $publisher = $_POST['publisher'];
         $stock = $_POST['stock'];
-        $synopsis = $_POST['synopsis'];
+        $synopsis = $_POST['synopsis'];        
         if(!empty($_FILES['image'])){
-
-            if($action == "add"){
-                $image_file = $_FILES['image']['name'];                
-                $type = $_FILES['image']['type'];
-                $size = $_FILES['image']['size'];
-                $uploadedFile = $_FILES['image']['tmp_name'];
-                $sourceProperties = getimagesize($uploadedFile);
-                $imageType = $sourceProperties[2];
-                $path = "../upload/".$image_file;
-            }                
+            $image_file = $_FILES['image']['name'];                
+            $type = $_FILES['image']['type'];
+            $size = $_FILES['image']['size'];
+            $temp = $_FILES['image']['tmp_name'];    
+            $path = "../upload/".$image_file;           
             if($action == 'edit'){
                 $oldImage = $_POST['oldImage'];
                 unlink("../upload/".$oldImage);
             }
                                
-            if (!file_exists($path)) {
-                if ($size < 5000000) {
-                    switch ($imageType) {
-                        case IMAGETYPE_PNG:
-                            $imageSrc = imagecreatefrompng($uploadedFile); 
-                            $tmp = imageResize($imageSrc,$sourceProperties[0],$sourceProperties[1]);
-                            imagepng($tmp,"../upload/".$image_file);
-                            break;
-                        case IMAGETYPE_JPEG:
-                            $imageSrc = imagecreatefromjpeg($uploadedFile); 
-                            $tmp = imageResize($imageSrc,$sourceProperties[0],$sourceProperties[1]);
-                            imagejpeg($tmp,"../upload/".$image_file);
-                            break;
-                        case IMAGETYPE_JPG:
-                            $imageSrc = imagecreatefromjpg($uploadedFile); 
-                            $tmp = imageResize($imageSrc,$sourceProperties[0],$sourceProperties[1]);
-                            imagejpg($tmp,"../upload/".$image_file);
-                            break;
-                        default:
-                            echo "Invalid Image type.";
-                            exit;
-                            break;
-                    }
+            if (!file_exists($path) || $action != "edit") {
+                if ($size < 5000000) {                    
                     if ($action == "add"){
                         $sql = "INSERT INTO buku(idBuku, idKategori, judul, idPenerbit, penulis, qty, image, sinopsis) values(:fid,:fkategori,:fjudul,:fpenerbit,:fpenulis,:fqty,:fimage,:fsinopsis)";                        
                     }
                     if ($action == "edit"){
                         $sql = "UPDATE buku SET idKategori=:fkategori, judul=:fjudul, idPenerbit=:fpenerbit, penulis=:fpenulis, qty=:fqty, image=:fimage, sinopsis=:fsinopsis WHERE idBuku=:fid";
                     }
+                    move_uploaded_file($temp, "../upload/".$image_file);
                     $query = $dbConn->prepare($sql);
                     $query ->bindParam(':fid',$id);     
                     $query ->bindParam(':fkategori',$category);
@@ -270,13 +245,12 @@
                     $query ->bindParam(':fsinopsis',$synopsis);
 
                     if ($query->execute()) {
-                        // if (headers_sent()) {
-                        //     die("<script> location.replace('booklist.php'); </script>");
-                        // }
-                        // else{
-                        //     exit(header("Location: booklist.php"));
-                        // }
-                        echo "test";
+                        if (headers_sent()) {
+                            die("<script> location.replace('booklist.php'); </script>");
+                        }
+                        else{
+                            exit(header("Location: booklist.php"));
+                        }
                     }
                     else {
                         echo "<script> alert('There's An Error While Inserting Data. Please Try Again'); </script>";

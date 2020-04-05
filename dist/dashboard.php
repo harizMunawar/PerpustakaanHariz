@@ -75,7 +75,7 @@
                 <?php if ($role == 'Admin') {?>
                 <div class="card box-shadow">
                     <div class="card-header bg-gray text-white">
-                        <a href="login.php" class="text-white display-5 my-0 font-weight-normal stretched-link">Manage Librarian</a>
+                        <a href="user.php" class="text-white display-5 my-0 font-weight-normal stretched-link">Manage Librarian</a>
                     </div>
                     <div class="card-body">
                         <h1 class="card-title pricing-card-title"><i class="fa fa-user-circle" aria-hidden="true"></i></h1>
@@ -108,7 +108,7 @@
                 
                 <div class="card box-shadow">
                     <div class="card-header bg-gray text-white">
-                        <a href="login.php" class="text-white display-5 my-0 font-weight-normal stretched-link">Manage Publisher</a>
+                        <a href="publisher.php" class="text-white display-5 my-0 font-weight-normal stretched-link">Manage Publisher</a>
                     </div>
                     <div class="card-body">
                         <h1 class="card-title pricing-card-title"><i class="fa fa-podcast" aria-hidden="true"></i></h1>

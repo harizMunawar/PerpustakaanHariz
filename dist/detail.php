@@ -38,7 +38,7 @@
                 <li class="breadcrumb-item" aria-current="page"><a href="../index.html">Home</a></li>
                 <?php if ($_SESSION['login']) {?>
                     <li class="breadcrumb-item" aria-current="page"><a href="login.php">Login</a></li>
-                    <li class="breadcrumb-item" aria-current="page"><?php echo "<a href='admin.php?role=".$_SESSION['role']."&id=".$_SESSION['id']."'>Dashboard</a></li>";?>
+                    <li class="breadcrumb-item" aria-current="page"><?php echo "<a href='dashboard.php?role=".$_SESSION['role']."&id=".$_SESSION['id']."'>Dashboard</a></li>";?>
                 <?php } ?>
                 <li class="breadcrumb-item" aria-current="page"><a href="booklist.php">Book List</a></li>
                 <li class="breadcrumb-item active" aria-current="page"><?php echo $title;?></li>
@@ -50,7 +50,7 @@
         <div class="container-fluid">
             <div class="row p-0 m-0">
                 <div class="col-1 mt-5 text-center p-0 m-0 d-none d-md-block">                    
-                    <div class="align-items-center">
+                    <div style="margin-top:9rem;">
                         <a href="?id=<?php echo $prev?>" role="button" class="btn btn-success"><i class="fa fa-angle-double-left" aria-hidden="true"></i> Prev</a>
                     </div>
                 </div>
@@ -73,7 +73,7 @@
                     </div>                    
                 </div>
                 <div class="col-1 mt-5 text-center p-0 m-0 d-none d-md-block">                    
-                    <div>
+                    <div style="margin-top:9rem;">
                         <a href="?id=<?php echo $next?>" role="button" class="btn btn-success">Next <i class="fa fa-angle-double-right" aria-hidden="true"></i></a>
                     </div>
                 </div>

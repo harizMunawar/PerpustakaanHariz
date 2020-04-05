@@ -57,6 +57,10 @@ body{
     color: #ffc107 !important;
 }
 
+.font-product{
+    font-family: "product-sans";    
+}
+
 a.text-primary:hover{
     color: #c89600 !important;
     text-decoration: underline;
