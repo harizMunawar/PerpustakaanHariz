@@ -41,8 +41,7 @@
 
     $countId = $dbConn -> prepare("SELECT MAX(idBuku) AS id FROM buku");
     $countId -> execute();
-    $newId = $countId -> fetchAll();
-    foreach ($newId as $newIdrow){
+    foreach ($countId -> fetchAll() as $newIdrow){
         $newIdrow['id']++;
     }
     
@@ -62,7 +61,7 @@
             <ol class="breadcrumb">
                 <li class="breadcrumb-item" aria-current="page"><a href="../index.html">Home</a></li>
                 <li class="breadcrumb-item" aria-current="page"><a href="login.php">Login</a></li>
-                <li class="breadcrumb-item" aria-current="page"><?php echo "<a href='dashboard.php?role=$role&id=$userId'>Dashboard</a></li>";?>
+                <li class="breadcrumb-item" aria-current="page"><a href='dashboard.php'>Dashboard</a></li>
                 <li class="breadcrumb-item" aria-current="page"><a href="booklist.php">Book List</a></li>
                 <li class="breadcrumb-item active" aria-current="page"><?php echo $buttonText?> Book</li>
             </ol>

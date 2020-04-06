@@ -41,7 +41,7 @@
                 <li class="breadcrumb-item" aria-current="page"><a href="../index.html">Home</a></li>
                 <?php if ($_SESSION['login']) {?>
                     <li class="breadcrumb-item" aria-current="page"><a href="login.php">Login</a></li>
-                    <li class="breadcrumb-item" aria-current="page"><?php echo "<a href='dashboard.php?role=".$_SESSION['role']."&id=".$_SESSION['id']."'>Dashboard</a></li>";?>
+                    <li class="breadcrumb-item" aria-current="page"><a href='dashboard.php'>Dashboard</a></li>
                 <?php } ?>
                 <li class="breadcrumb-item" aria-current="page"><a href="booklist.php">Book List</a></li>
                 <li class="breadcrumb-item active" aria-current="page"><?php echo $title;?></li>

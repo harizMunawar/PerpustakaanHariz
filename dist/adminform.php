@@ -49,7 +49,7 @@
             <ol class="breadcrumb">
                 <li class="breadcrumb-item" aria-current="page"><a href="../index.html">Home</a></li>
                 <li class="breadcrumb-item" aria-current="page"><a href="login.php">Login</a></li>
-                <li class="breadcrumb-item" aria-current="page"><a class="text-capitalize" <?php echo "href='dashboard.php?role=$role&id=$id'"?>>Dashboard</a></li>
+                <li class="breadcrumb-item" aria-current="page"><a href='dashboard.php'>Dashboard</a></li>
                 <li class="breadcrumb-item" aria-current="page"><a href="admin.php">Administrator List</a></li>
                 <li class="breadcrumb-item active" aria-current="page">Administrator Form</li>
             </ol>

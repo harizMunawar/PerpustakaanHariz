@@ -45,7 +45,7 @@
             <ol class="breadcrumb">
                 <li class="breadcrumb-item" aria-current="page"><a href="../index.html">Home</a></li>
                 <li class="breadcrumb-item" aria-current="page"><a href="login.php">Login</a></li>
-                <li class="breadcrumb-item" aria-current="page"><?php echo "<a href='dashboard.php?role=$role&id=$userId'>Dashboard</a></li>";?>
+                <li class="breadcrumb-item" aria-current="page"><a href='dashboard.php'>Dashboard</a></li>
                 <li class="breadcrumb-item" aria-current="page"><a href="studentlist.php">Student List</a></li>
                 <li class="breadcrumb-item active" aria-current="page"><?php echo $buttonText?> Book</li>
             </ol>

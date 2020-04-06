@@ -101,11 +101,12 @@
                     </div>
                 </div>
                 <?php }?>
-
+                
+                <!-- Manage Transaction -->
                 <?php if ($role == 'Librarian') {?>
                 <div class="card box-shadow">
                     <div class="card-header bg-gray text-white">
-                        <a href="login.php" class="text-white display-5 my-0 font-weight-normal stretched-link">Manage Transaction</a>
+                        <a href="transactionform.php" class="text-white display-5 my-0 font-weight-normal stretched-link">Manage Transaction</a>
                     </div>
                     <div class="card-body">
                         <h1 class="card-title pricing-card-title"><i class="fa fa-money" aria-hidden="true"></i></h1>
