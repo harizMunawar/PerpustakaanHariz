@@ -61,10 +61,11 @@
             <?php if($action == "add"){?>
             <form action="adminform.php?action=<?php echo $action;?>" method="post" enctype="multipart/form-data" id="form">
             <?php }else{?>
+            <?php   if($action=="delete")echo"<fieldset disabled>";?>
             <form action="adminform.php?action=<?php echo $action;?>&userid=<?php echo $userid?>" method="post" enctype="multipart/form-data" id="form">
             <?php }?>
                 <!-- Hidden Id Field -->
-                <input hidden type="text" name="id" id="inputId" value="<?php if($action != "edit")echo $newIdrow['id'];else echo $_GET['userid'];?>">                
+                <input hidden type="text" name="id" id="inputId" value="<?php if($action != "edit")echo $newIdrow['id'];else echo $_GET['userid'];?>">
                 <div class="row">
                     <div class="col-4">
                         <!-- Image Field -->
@@ -82,12 +83,9 @@
                         </div>
                         <div class="mb-3">
                             <small id="imageHelp" class="form-text text-muted hidden"><?php if($action=='add')echo "Please Select An Image";?></small>
-                        </div>
-                        <!-- Submit Button -->
-                        <input required type="submit" class="btn btn-primary" name="submit" value="Submit">
+                        </div>                                                
                     </div>
                     <div class="col">
-
                         <!-- Name And Username Field -->
                         <div class="row">
                             <!-- Name Field -->
@@ -110,11 +108,12 @@
                         <!-- Password And Confirmation Field -->
                         <div class="row">
                             <!-- Password Field -->
+                            <?php if($action =="delete") $type="text";else $type="password";?>
                             <div class="col">
                                 <div class="form-group">
                                     <label for="inputPassword">User's Password</label>
-                                    <input required type="password" class="form-control" name="password" id="inputPassword" placeholder='Enter Password' value="<?php if($action!='add')echo $data['password'];?>">
-                                    <small id="usernameHelp" class="form-text text-muted hidden d-none d-md-block">This Data Will Be Used As Login Requirement</small>
+                                    <input required type="<?php echo $type?>" class="form-control" name="password" id="inputPassword" placeholder='Enter Password' value="<?php if($action!='add')echo $data['password'];?>">
+                                    <small id="passwordHelp" class="form-text text-muted hidden d-none d-md-block">This Data Will Be Used As Login Requirement</small>
                                 </div>
                             </div>
                             <?php if($action !="delete"){?>
@@ -122,8 +121,8 @@
                             <div class="col">
                                 <div class="form-group">
                                     <label for="inputConfirm">Confirmation</label>
-                                    <input required type="password" class="form-control" name="confirm" id="inputConfirm" placeholder='Confirm Your Password'>
-                                    
+                                    <input required type="password" class="form-control " name="confirm" id="inputConfirm" placeholder='Confirm Your Password'>
+                                    <small id="passwordHelp" class="form-text text-muted hidden d-none d-md-block">Make Sure This Field Is Same As Password</small>
                                 </div>
                             </div>
                             <?php }?>
@@ -174,6 +173,14 @@
                                 </div>
                             </div>
                         </div>
+                    </div>
+                </div>                
+                <?php   if($action=="delete")echo"</fieldset>";?>
+                <div class="row">
+                    <div class="col-4">
+                        <!-- Submit Button -->
+                        <?php if($action == "delete") $submitstyle='danger';else $submitstyle='primary';?>
+                        <input required type="submit" class="btn btn-<?php echo $submitstyle;?> text-capitalize" name="submit" value="<?php echo $action;?>">
                     </div>
                 </div>
             </form>
@@ -291,3 +298,39 @@
         }
     }
 ?>
+
+<script>    
+    function CustomValidation(input) {
+        this.invalidities = [];
+    }
+
+    CustomValidation.prototype = {
+        addInvalidity: function(message) {
+            this.invalidities.push(message);
+        },  
+        getInvalidities: function() {
+            return this.invalidities.join('. \n');
+        },
+        checkValidity: function(input) {
+            if(confirm.value == password.value){
+                var element = document.querySelector('#inputConfirm');
+                element.classList.add("is-valid");
+                element.classList.remove("is-invalid");
+            } else {
+                var element = document.querySelector('#inputConfirm');
+                element.classList.add("is-invalid");
+                element.classList.remove("is-valid");
+            }
+        },
+    };
+    var confirm = document.getElementById('inputConfirm');
+    var password = document.getElementById('inputPassword');
+    confirm.CustomValidation = new CustomValidation();
+    confirm.addEventListener("keyup", function(){
+        confirm.CustomValidation.checkValidity(this);
+    })
+    password.CustomValidation = new CustomValidation();
+    password.addEventListener("keyup", function(){
+        password.CustomValidation.checkValidity(this);
+    })
+</script>

@@ -17,7 +17,12 @@
     $limit = 3;
     $limit_start = ($page - 1) * $limit;
     $no = $limit_start + 1;
-    $getPublisher = $dbConn -> prepare("SELECT * FROM penerbit ORDER BY nama LIMIT ".$limit_start.",".$limit);
+    $searchword = "";
+    if(isset($_GET['search'])){
+        $searchword = $_GET['search'];
+    }    
+    $getPublisher = $dbConn -> prepare("SELECT * FROM penerbit WHERE nama LIKE :param OR alamat LIKE :param OR phone LIKE :param OR email LIKE :param LIMIT ".$limit_start.",".$limit);
+    $getPublisher->bindValue(':param', '%'.$searchword.'%', PDO::PARAM_STR);
     $getPublisher -> execute();
 
     $getNewId = $dbConn -> prepare("SELECT MAX(idPenerbit) AS id FROM penerbit");
@@ -30,7 +35,6 @@
 <html lang="en">
     <head>
         <?php echo file_get_contents("../snippets/header.html"); ?>
-        <title>Heaven's Door</title>
     </head>
     <body>
         <!--Navbar-->
@@ -57,8 +61,8 @@
                         Add Publisher &nbsp;<i class="fa fa-plus-square" aria-hidden="true"></i>
                     </a>
                 </div>
-            </div>
-            <?php             
+            </div>            
+            <?php                             
                 $total = $getPublisher -> rowCount();
                 foreach($getPublisher -> fetchAll() as $dataPublisher){
                     echo "<div class='card bg-light text-dark mb-2 border-0 font-product'>";
@@ -213,7 +217,8 @@
                         <nav aria-label="...">
                             <ul class="pagination">
                                 <?php
-                                    $sql2 = $dbConn->prepare("SELECT COUNT(*) AS jumlah FROM penerbit");
+                                    $sql2 = $dbConn->prepare("SELECT COUNT(*) AS jumlah FROM penerbit WHERE nama LIKE :param OR alamat LIKE :param OR phone LIKE :param OR email LIKE :param ORDER BY nama");
+                                    $sql2->bindValue(':param', '%'.$searchword.'%', PDO::PARAM_STR);
                                     $sql2->execute();
                                     $get_jumlah = $sql2->fetch();
                                     $jumlah_page = ceil($get_jumlah['jumlah'] / $limit);                            
@@ -229,17 +234,17 @@
                                         }
                                         else {
                                             $link_prev = ($page > 1) ? $page - 1 : 1;
-                                            echo "<li class='page-item'><a class='page-link' href='publisher.php?page=1'>First</a></li>";
-                                            echo "<li><a class='page-link' href='publisher.php?page=$link_prev'>&laquo;</a></li>";
+                                            echo "<li class='page-item'><a class='page-link' href='publisher.php?page=1&search=$searchword'>First</a></li>";
+                                            echo "<li><a class='page-link' href='publisher.php?page=$link_prev&search=$searchword'>&laquo;</a></li>";
                                         }
                                         if ($page == $jumlah_page) {
                                             echo "<li class='disabled page-item'><a class='page-link' href='#'>&raquo;</a></li>";
-                                            echo "<li class='disabled page-item'><a class='page-link' href='publisher.php?page=$jumlah_page'>Last</a></li>";
+                                            echo "<li class='disabled page-item'><a class='page-link' href='publisher.php?page=$jumlah_page&search=$searchword'>Last</a></li>";
                                         } 
                                         else {
                                             $link_next = ($page < $jumlah_page) ? $page + 1 : $jumlah_page;
-                                            echo "<li><a class='page-link' href='publisher.php?page=$link_next'>&raquo;</a></li>";
-                                            echo "<li class='page-item'><a class='page-link' href='publisher.php?page=$jumlah_page'>Last</a></li>";
+                                            echo "<li><a class='page-link' href='publisher.php?page=$link_next&search=$searchword'>&raquo;</a></li>";
+                                            echo "<li class='page-item'><a class='page-link' href='publisher.php?page=$jumlah_page&search=$searchword'>Last</a></li>";
                                         }
                                     }
                                 ?>

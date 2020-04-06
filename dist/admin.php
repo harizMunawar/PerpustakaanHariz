@@ -1,19 +1,24 @@
 <?php
     require_once("config.php");
     session_start();
-    if (!$_SESSION['login'] || $_SESSION['role'] != "admin") {
+    if (!$_SESSION['login'] || $_SESSION['role'] == "Librarian") {
         header("Location: login.php");
     }
     $role = $_SESSION['role'];
     $id = $_SESSION['id'];
     require("../snippets/navbar.php");
-    $pageName = "Administrator List";
+    $pageName = "Administrator List";    
 
     $page = (isset($_GET['page'])) ? $_GET['page'] : 1;
     $limit = 1;
     $limit_start = ($page - 1) * $limit;
     $no = $limit_start + 1;
-    $getAdminData = $dbConn -> prepare("SELECT * FROM login, pustakawan WHERE login.idPustakawan = pustakawan.idPustakawan ORDER BY nama LIMIT ".$limit_start.",".$limit);
+    $searchword = "";
+    if(isset($_GET['search'])){
+        $searchword = $_GET['search'];
+    }
+    $getAdminData = $dbConn -> prepare("SELECT * FROM login l, pustakawan p WHERE l.idPustakawan = p.idPustakawan AND (l.username LIKE :param OR l.hakUser LIKE :param OR p.nama LIKE :param OR p.alamat LIKE :param OR p.phone LIKE :param OR p.email LIKE :param) ORDER BY nama LIMIT ".$limit_start.",".$limit);
+    $getAdminData->bindValue(':param', '%'.$searchword.'%', PDO::PARAM_STR);
     $getAdminData -> execute();
 ?>
 <!DOCTYPE html>
@@ -80,7 +85,8 @@
                         <nav aria-label="...">
                             <ul class="pagination">
                                 <?php
-                                    $sql2 = $dbConn->prepare("SELECT COUNT(login.idPustakawan) AS jumlah FROM login, pustakawan WHERE login.idPustakawan = pustakawan.idPustakawan");
+                                    $sql2 = $dbConn->prepare("SELECT COUNT(l.idPustakawan) AS jumlah FROM login l, pustakawan p WHERE l.idPustakawan = p.idPustakawan AND (l.username LIKE :param OR l.hakUser LIKE :param OR p.nama LIKE :param OR p.alamat LIKE :param OR p.phone LIKE :param OR p.email LIKE :param)");
+                                    $sql2->bindValue(':param', '%'.$searchword.'%', PDO::PARAM_STR);
                                     $sql2->execute();
                                     $get_jumlah = $sql2->fetch();
                                     $jumlah_page = ceil($get_jumlah['jumlah'] / $limit);                            
@@ -96,17 +102,17 @@
                                         }
                                         else {
                                             $link_prev = ($page > 1) ? $page - 1 : 1;
-                                            echo "<li class='page-item'><a class='page-link' href='admin.php?page=1'>First</a></li>";
-                                            echo "<li><a class='page-link' href='admin.php?page=$link_prev'>&laquo;</a></li>";
+                                            echo "<li class='page-item'><a class='page-link' href='admin.php?page=1&search=$searchword'>First</a></li>";
+                                            echo "<li><a class='page-link' href='admin.php?page=$link_prev&search=$searchword'>&laquo;</a></li>";
                                         }
                                         if ($page == $jumlah_page) {
                                             echo "<li class='disabled page-item'><a class='page-link' href='#'>&raquo;</a></li>";
-                                            echo "<li class='disabled page-item'><a class='page-link' href='admin.php?page=$jumlah_page'>Last</a></li>";
+                                            echo "<li class='disabled page-item'><a class='page-link' href='admin.php?page=$jumlah_page&search=$searchword'>Last</a></li>";
                                         } 
                                         else {
                                             $link_next = ($page < $jumlah_page) ? $page + 1 : $jumlah_page;
-                                            echo "<li><a class='page-link' href='admin.php?page=$link_next'>&raquo;</a></li>";
-                                            echo "<li class='page-item'><a class='page-link' href='admin.php?page=$jumlah_page'>Last</a></li>";
+                                            echo "<li><a class='page-link' href='admin.php?page=$link_next&search=$searchword'>&raquo;</a></li>";
+                                            echo "<li class='page-item'><a class='page-link' href='admin.php?page=$jumlah_page&search=$searchword'>Last</a></li>";
                                         }
                                     }
                                 ?>

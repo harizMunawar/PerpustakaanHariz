@@ -72,6 +72,7 @@
                     </div>
                 </div>
 
+                <!-- Manage Administrator -->
                 <?php 
                     if ($role == 'Admin') {
                         $administrator = $dbConn ->prepare("SELECT * FROM login, pustakawan WHERE login.idPustakawan = pustakawan.idPustakawan ORDER BY nama");
@@ -86,7 +87,6 @@
                         $librarian -> execute();
                         $totalLibrarian = $librarian -> rowCount();
                 ?>
-
                 <div class="card box-shadow">
                     <div class="card-header bg-gray text-white">
                         <a href="admin.php" class="text-white display-5 my-0 font-weight-normal stretched-link">Manage Librarian</a>
@@ -137,16 +137,30 @@
                     </div>
                 </div>
 
+                <!-- Manage Student -->
+                <?php
+                    $student = $dbConn -> prepare("SELECT * FROM siswa");
+                    $student -> execute();
+                    $totalStudent = $student -> rowCount();
+
+                    $jurusan = $dbConn -> prepare("SELECT * FROM siswa GROUP BY jurusan");
+                    $jurusan -> execute();
+                    $totalJurusan = $jurusan -> rowCount();
+
+                    $tingkat = $dbConn -> prepare("SELECT * FROM siswa GROUP BY tingkat");
+                    $tingkat -> execute();
+                    $totalTingkat = $tingkat -> rowCount();
+                ?>
                 <div class="card box-shadow">
                     <div class="card-header bg-gray text-white">
-                        <a href="login.php" class="text-white display-5 my-0 font-weight-normal stretched-link">Manage Student</a>
+                        <a href="studentlist.php" class="text-white display-5 my-0 font-weight-normal stretched-link">Manage Student</a>
                     </div>
                     <div class="card-body">
                         <h1 class="card-title pricing-card-title"><i class="fa fa-id-card" aria-hidden="true"></i></h1>
                         <ul class="list-unstyled mt-2 mb-2">
-                        <li>30 users included</li>
-                        <li>15 GB of storage</li>
-                        <li>Phone and email support</li>
+                        <li>Total <?php echo $totalStudent?> Students</li>
+                        <li><?php echo $totalJurusan?> Jurusan</li>
+                        <li><?php echo $totalTingkat?> Tingkat</li>
                         </ul>
                     </div>
                 </div>

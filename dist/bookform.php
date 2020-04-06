@@ -87,7 +87,7 @@
                     <div class="row h-100">
                         <div class="col-4">
                             <div class="card">
-                                <img src="<?php if($action!='add')echo "../upload/".$data['image'];else echo "../assets/images/default.jpg";?>" <?php if($action!='add')echo "style=height:400px";?> class="card-img-top" id="imageCard" name="imagecard">
+                                <img src="<?php if($action!='add')echo "../upload/book_cover/".$data['image'];else echo "../assets/images/default.jpg";?>" <?php if($action!='add')echo "style=height:400px";?> class="card-img-top" id="imageCard" name="imagecard">
                                 <?php if($action=='edit'){?>
                                     <input hidden type="text" name="oldImage" value="<?php echo $data['image'];?>">
                                 <?php }?>
@@ -212,13 +212,13 @@
             $type = $_FILES['image']['type'];
             $size = $_FILES['image']['size'];
             $temp = $_FILES['image']['tmp_name'];    
-            $path = "../upload/".$image_file;          
+            $path = "../upload/book_cover/".$image_file;          
 
             if (!file_exists($path) || $action == "edit") {
 
                 if($action == "edit" && !file_exists($path)){
                     $oldImage = $_POST['oldImage'];
-                    unlink("../upload/".$oldImage);
+                    unlink("../upload/book_cover/".$oldImage);
                 }
                 if ($size < 5000000) {                    
                     if ($action == "add"){
@@ -228,8 +228,7 @@
                         $sql = "UPDATE buku SET idKategori=:fkategori, judul=:fjudul, idPenerbit=:fpenerbit, penulis=:fpenulis, qty=:fqty, image=:fimage, sinopsis=:fsinopsis WHERE idBuku=:fid";
                     } else if ($action == "edit" && file_exists($path)){
                         $sql = "UPDATE buku SET idKategori=:fkategori, judul=:fjudul, idPenerbit=:fpenerbit, penulis=:fpenulis, qty=:fqty, sinopsis=:fsinopsis WHERE idBuku=:fid";
-                    }          
-                    move_uploaded_file($temp, "../upload/".$image_file);
+                    }                              
                     $query = $dbConn->prepare($sql);
                     $query ->bindParam(':fid',$id);     
                     $query ->bindParam(':fkategori',$category);
@@ -241,8 +240,8 @@
                         $query ->bindparam(':fimage',$image_file);
                     }                                        
                     $query ->bindParam(':fsinopsis',$synopsis);
-
                     if ($query->execute()) {
+                        move_uploaded_file($temp, "../upload/book_cover/".$image_file);
                         if (headers_sent()) {
                             die("<script> location.replace('booklist.php'); </script>");
                         }
@@ -272,7 +271,7 @@
             $getImage = $dbConn ->prepare("SELECT image FROM buku WHERE idBuku=".$_GET['bookid']);
             $getImage ->execute();
             foreach($getImage->fetchAll() as $deletedRow){
-                unlink("../upload/".$deletedRow['image']);
+                unlink("../upload/book_cover/".$deletedRow['image']);
             }
             $query = $dbConn->prepare("DELETE FROM buku WHERE idBuku=".$_GET['bookid']);
             if($query ->execute()){

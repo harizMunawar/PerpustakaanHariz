@@ -10,7 +10,15 @@
     }
     require_once("config.php");
     require("../snippets/navbar.php");
-    $page = "Book List";
+    $pageName = "Book List";
+
+    $page = (isset($_GET['page'])) ? $_GET['page'] : 1;
+    $limit = 5;
+    $limit_start = ($page - 1) * $limit;
+    $searchword = "";
+    if(isset($_GET['search'])){
+        $searchword = $_GET['search'];
+    }
 ?>
 
 <!DOCTYPE html>
@@ -21,7 +29,7 @@
 
     <body>
         <!--Navbar-->
-        <?php echo CNavigation::GenerateMenu($page); ?>
+        <?php echo CNavigation::GenerateMenu($pageName); ?>
         <!--End Of Navbar-->
 
         <!-- Breadcrumbs -->
@@ -66,14 +74,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                <?php
-                    $page = (isset($_GET['page'])) ? $_GET['page'] : 1;
-                    $limit = 5;
-                    $limit_start = ($page - 1) * $limit;
-                    $searchword = "";
-                    if(isset($_GET['search'])){
-                        $searchword = $_GET['search'];
-                    }
+                <?php                    
                     $sql = "SELECT idBuku, judul, penulis, idPenerbit, idKategori, qty, image, SUBSTRING(sinopsis, 1, 200) AS sinopsis FROM buku WHERE idBuku LIKE :param OR SUBSTRING(sinopsis, 1, 200) LIKE :param OR judul LIKE :param OR penulis LIKE :param OR idKategori = (SELECT idKategori FROM kategori WHERE kategoriBuku LIKE :param) OR idPenerbit = (SELECT idPenerbit FROM penerbit WHERE nama LIKE :param) ORDER BY judul LIMIT ".$limit_start.",".$limit;
                     $result = $dbConn -> prepare($sql);
                     $result->bindValue(':param', '%'.$searchword.'%', PDO::PARAM_STR);
@@ -82,7 +83,7 @@
                     $total = $result -> rowCount();
                     while ($row = $result -> fetch(PDO::FETCH_ASSOC)){
                         echo "<tr class='items' data-href='detail.php?id=".$row['idBuku']."' border='0'>";   
-                        echo "<th class='d-none d-md-table-cell' style='max-width: 200px;' name='idBuku' value=".$row['idBuku']."><img class='img-thumbnail img-fluid' src='../upload/".$row['image']."'></th>";                     
+                        echo "<th class='d-none d-md-table-cell' style='max-width: 200px;' name='idBuku' value=".$row['idBuku']."><img class='img-thumbnail img-fluid' src='../upload/book_cover/".$row['image']."'></th>";                     
                         echo "<td>".$row['judul']."</td>";
                         echo "<td>".$row['penulis']."</td>";
                         $selectForeign = "SELECT penerbit.nama, kategori.kategoriBuku FROM penerbit, kategori WHERE idPenerbit=".$row['idPenerbit']." AND idKategori=".$row['idKategori'];
@@ -119,7 +120,6 @@
                                     $sql2->execute();
                                     $get_jumlah = $sql2->fetch();
                                     $jumlah_page = ceil($get_jumlah['jumlah'] / $limit);
-
                                     
                                     if($total == 0){
                                         echo "<li class='disabled page-item'><a class='page-link' href='#'>First</a></li>";

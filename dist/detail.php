@@ -59,7 +59,7 @@
                 </div>
                 <div class="col-4 mt-5 text-center">                    
                     <div>
-                        <img style="width:55%;" class="img img-thumbnail" src="../upload/<?php echo $image;?>">
+                        <img style="width:55%;" class="img img-thumbnail" src="../upload/book_cover/<?php echo $image;?>">
                     </div>
                 </div>
                 <div class="col-6 mt-5">
