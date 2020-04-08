@@ -15,7 +15,7 @@
                             <span class='navbar-toggler-icon'></span>
                         </button>
                         <div class='collapse navbar-collapse' id='collapsibleNavId'>";
-            if(basename($_SERVER['PHP_SELF']) == 'booklist.php' || basename($_SERVER['PHP_SELF']) == 'studentlist.php' || basename($_SERVER['PHP_SELF']) == 'booklist.php' || basename($_SERVER['PHP_SELF']) == 'publisher.php' || basename($_SERVER['PHP_SELF']) == 'admin.php') {
+            if(basename($_SERVER['PHP_SELF']) == 'booklist.php' || basename($_SERVER['PHP_SELF']) == 'studentlist.php' || basename($_SERVER['PHP_SELF']) == 'booklist.php' || basename($_SERVER['PHP_SELF']) == 'publisher.php' || basename($_SERVER['PHP_SELF']) == 'admin.php' || basename($_SERVER['PHP_SELF']) == 'transactionlist.php' || basename($_SERVER['PHP_SELF']) == 'report.php') {
                 $html .="   <form method='get' action='".basename($_SERVER['PHP_SELF'])."' class='form-inline ml-auto mt-md-0'>
                                 <div>
                                     <input class='form-control mr-sm-2' type='text' name='search' placeholder='Search'>
@@ -28,7 +28,7 @@
                                 <a role='button' href='profile.php' class='btn btn-outline-warning my-2 my-sm-0' type='submit'>Edit Profile</a>";
             }
             if(isset($_SESSION['login']) && $_SESSION['login']){
-                if(basename($_SERVER['PHP_SELF']) == 'booklist.php' || basename($_SERVER['PHP_SELF']) == 'studentlist.php' || basename($_SERVER['PHP_SELF']) == 'booklist.php' || basename($_SERVER['PHP_SELF']) == 'publisher.php' || basename($_SERVER['PHP_SELF']) == 'admin.php'){
+                if(basename($_SERVER['PHP_SELF']) == 'booklist.php' || basename($_SERVER['PHP_SELF']) == 'studentlist.php' || basename($_SERVER['PHP_SELF']) == 'booklist.php' || basename($_SERVER['PHP_SELF']) == 'publisher.php' || basename($_SERVER['PHP_SELF']) == 'admin.php' || basename($_SERVER['PHP_SELF']) == 'transactionlist.php' || basename($_SERVER['PHP_SELF']) == 'report.php'){
                     $mlstyle = "2";
                 }else {
                     $mlstyle = "auto";

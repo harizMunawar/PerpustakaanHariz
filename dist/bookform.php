@@ -27,6 +27,8 @@
             $image = $data['image'];
             $synopsis = $data['sinopsis'];
         }
+        $getBorrowedBook = $dbConn -> prepare("SELECT * FROM buku, detailtransaksi, transaksi, siswa WHERE buku.idBuku = detailtransaksi.idBuku AND transaksi.idTransaksi = detailtransaksi.idTransaksi AND siswa.nis = transaksi.nis AND buku.idBUku = ".$id);
+        $getBorrowedBook -> execute();
     }
     if($action == "add"){
         $buttonText = "Add";
@@ -39,11 +41,11 @@
     $kategori = $dbConn -> prepare("SELECT * FROM kategori");
     $kategori -> execute();
 
-    $countId = $dbConn -> prepare("SELECT MAX(idBuku) AS id FROM buku");
+    $countId = $dbConn -> prepare("SELECT MAX(idBuku DIV 1) AS id FROM buku");
     $countId -> execute();
-    foreach ($countId -> fetchAll() as $newIdrow){
-        $newIdrow['id']++;
-    }
+    foreach ($countId -> fetchAll() as $maxId){
+        $idInsert = $maxId['id'] + 1;
+    }        
     
 ?>
 <!DOCTYPE html>
@@ -81,7 +83,7 @@
                 }
             ?>
                 <!-- Hidden Id Field -->
-                <input hidden type="text" name="id" id="inputId" value="<?php if($action != "edit")echo $newIdrow['id'];else echo $id;?>">
+                <input hidden type="text" name="id" id="inputId" value="<?php if($action == "add") echo $idInsert;else echo $id;?>">
                     <!-- Image Field -->
                     <div class="row h-100">
                         <div class="col-4">
@@ -192,6 +194,44 @@
             </form>
         </div>
         <!-- End Of Main Content -->
+
+        <!-- Warning Modal -->
+        <?php if($action =="delete"){?>
+        <div class="modal fade" id="onTransactionBook" tabindex="-1" role="dialog" aria-labelledby="modalTitle" aria-hidden="true">
+            <div class="container-fluid">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header bg-danger">
+                            <h5 class=" text-capitalize text-white modal-title" id="modalTitle">Delete Warning</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <form id="detailForm">
+                            <fieldset disabled="disabled">
+                                <div class="modal-body">
+                                    <h6 class="text-danger mb-3">Please Finish All Transaction Below Before Deleting This Book</h6>
+                                    <?php 
+                                        foreach($getBorrowedBook -> fetchAll() as $borrowedBook){
+                                            $getLibrarian = $dbConn -> prepare("SELECT * FROM pustakawan WHERE idPustakawan = ".$borrowedBook['idPustakawan']);
+                                            $getLibrarian -> execute();
+                                            foreach($getLibrarian as $librarianData)
+                                            echo"<div class='form-group'>";                                            
+                                            echo"    <input required type='text' class='form-control' value='".$borrowedBook['nama']." - ".$borrowedBook['nis']."'>";
+                                            echo"    <small class='text-muted'>(Transaction ID: ".$borrowedBook['idTransaksi'].")</small>";
+                                            echo"    <small class='form-text text-muted hidden'>".$borrowedBook['tglPinjam']."</small>";
+                                            echo"    <small class='form-text text-muted hidden'>".$librarianData['nama']."</small>";
+                                            echo"</div>";
+                                        }
+                                    ?>                                    
+                            </fieldset>
+                        </form>
+                    </div>                
+                </div>
+            </div>
+        </div>
+        <?php }?>
+        <!-- End Of Warning Modal -->
     </body>
 </html>
 
@@ -205,16 +245,13 @@
         $publisher = $_POST['publisher'];
         $stock = $_POST['stock'];
         $synopsis = $_POST['synopsis'];
-
         if(!empty($_FILES['image'])){
             $image_file = $_FILES['image']['name'];                
             $type = $_FILES['image']['type'];
             $size = $_FILES['image']['size'];
             $temp = $_FILES['image']['tmp_name'];    
-            $path = "../upload/book_cover/".$image_file;          
-
+            $path = "../upload/book_cover/".$image_file;
             if (!file_exists($path) || $action == "edit") {
-
                 if($action == "edit" && !file_exists($path)){
                     $oldImage = $_POST['oldImage'];
                     unlink("../upload/book_cover/".$oldImage);
@@ -238,7 +275,7 @@
                     if (!($action == "edit" && file_exists($path))){
                         $query ->bindparam(':fimage',$image_file);
                     }                                        
-                    $query ->bindParam(':fsinopsis',$synopsis);
+                    $query ->bindParam(':fsinopsis',$synopsis);                    
                     if ($query->execute()) {
                         move_uploaded_file($temp, "../upload/book_cover/".$image_file);
                         if (headers_sent()) {
@@ -249,7 +286,7 @@
                         }
                     }
                     else {
-                        echo "<script> alert('There's An Error While Inserting Data. Please Try Again'); </script>";
+                        echo "<script> alert('There is An Error While Inserting Data. Please Try Again'); </script>";
                     }
                 }
                 else {
@@ -262,24 +299,29 @@
         }
         else {
             echo "<script> alert('Please Select An Image'); </script>";
-        }
+        }  
     }
     if(isset($_POST['submit']) && $action == "delete"){
         $action = $_GET['action'];
         if($action == "delete") {
-            $getImage = $dbConn ->prepare("SELECT image FROM buku WHERE idBuku=".$_GET['bookid']);
-            $getImage ->execute();
-            foreach($getImage->fetchAll() as $deletedRow){
-                unlink("../upload/book_cover/".$deletedRow['image']);
-            }
-            $query = $dbConn->prepare("DELETE FROM buku WHERE idBuku=".$_GET['bookid']);
-            if($query ->execute()){
-                if (headers_sent()) {
-                    die("<script> location.replace('booklist.php'); </script>");
+            try{
+                $getImage = $dbConn ->prepare("SELECT image FROM buku WHERE idBuku=".$_GET['bookid']);
+                $getImage ->execute();                
+                $query = $dbConn->prepare("DELETE FROM buku WHERE idBuku=".$_GET['bookid']);
+                if($query ->execute()){
+                    foreach($getImage->fetchAll() as $deletedRow){
+                        unlink("../upload/book_cover/".$deletedRow['image']);
+                    }
+                    if (headers_sent()) {
+                        die("<script> location.replace('booklist.php'); </script>");
+                    }
+                    else{
+                        exit(header("Location: booklist.php"));
+                    }
                 }
-                else{
-                    exit(header("Location: booklist.php"));
-                }
+            } 
+            catch(PDOEXCEPTION $e){
+                echo "<script>$('#onTransactionBook').modal('show');</script> ";                
             }
         }
     }

@@ -103,18 +103,25 @@
                 <?php }?>
                 
                 <!-- Manage Transaction -->
-                <?php if ($role == 'Librarian') {?>
+                <?php 
+                if ($role == 'Librarian') {
+                    $getUnfinishedTransaction = $dbConn -> prepare("SELECT * FROM detailTransaksi WHERE detailTransaksi.status=0");
+                    $getUnfinishedTransaction -> execute();
+                    $getUnfinishedTransactionCount = $getUnfinishedTransaction -> rowCount();
+                    
+                    $getMyTransaction = $dbConn -> prepare("SELECT * FROM transaksi, detailTransaksi WHERE transaksi.idTransaksi = detailTransaksi.idTransaksi AND transaksi.idPustakawan = ".$_SESSION['id']." AND detailTransaksi.status = 0");
+                    $getMyTransaction -> execute();
+                    $getMyTransactionCount = $getMyTransaction -> rowCount();
+                ?>
                 <div class="card box-shadow">
                     <div class="card-header bg-gray text-white">
-                        <a href="transactionform.php" class="text-white display-5 my-0 font-weight-normal stretched-link">Manage Transaction</a>
+                        <a href="transactionform.php?action=add" class="text-white display-5 my-0 font-weight-normal stretched-link">ManageTransaction</a>
                     </div>
                     <div class="card-body">
                         <h1 class="card-title pricing-card-title"><i class="fa fa-money" aria-hidden="true"></i></h1>
                         <ul class="list-unstyled mt-2 mb-2">
-                        <li>20 users included</li>
-                        <li>10 GB of storage</li>
-                        <li>Priority email support</li>
-                        <li>Help center access</li>
+                        <li><?php echo $getUnfinishedTransactionCount?> Borrowed Books</li>
+                        <li><?php echo $getMyTransactionCount?> Waiting For Your Action</li>
                         </ul>
                     </div>
                 </div>
@@ -128,7 +135,7 @@
                 ?>
                 <div class="card box-shadow">
                     <div class="card-header bg-gray text-white">
-                        <a href="publisher.php" class="text-white display-5 my-0 font-weight-normal stretched-link">Manage Publisher</a>
+                        <a href="publisher.php?action=" class="text-white display-5 my-0 font-weight-normal stretched-link">Manage Publisher</a>
                     </div>
                     <div class="card-body">
                         <h1 class="card-title pricing-card-title"><i class="fa fa-podcast" aria-hidden="true"></i></h1>
@@ -165,17 +172,26 @@
                         </ul>
                     </div>
                 </div>
+                
+                <!-- Manage Report -->
+                <?php
+                    $getFinishedTransaction = $dbConn -> prepare("SELECT * FROM detailTransaksi WHERE detailTransaksi.status=1");
+                    $getFinishedTransaction -> execute();
+                    $getFinishedTransactionCount = $getFinishedTransaction -> rowCount();
 
+                    $getPenalty = $dbConn -> prepare("SELECT * FROM transaksi, detailTransaksi WHERE transaksi.idTransaksi = detailTransaksi.idTransaksi AND (DATEDIFF(detailTransaksi.tglKembali, transaksi.tglPinjam) > 3)");
+                    $getPenalty -> execute();
+                    $getPenaltyCount = $getPenalty -> rowCount();
+                ?>
                 <div class="card box-shadow">
                     <div class="card-header bg-gray text-white">
-                        <a href="login.php" class="text-white display-5 my-0 font-weight-normal stretched-link">Manage Report</a>
+                        <a href="report.php" class="text-white display-5 my-0 font-weight-normal stretched-link">Manage Report</a>
                     </div>
                     <div class="card-body">
                         <h1 class="card-title pricing-card-title"><i class="fa fa-folder-open" aria-hidden="true"></i></h1>
                         <ul class="list-unstyled mt-2 mb-2">
-                        <li>30 users included</li>
-                        <li>15 GB of storage</li>
-                        <li>Phone and email support</li>
+                        <li><?php echo $getFinishedTransactionCount?> Returned Books</li>
+                        <li><?php echo $getPenaltyCount?> Late Returned Books</li>                        
                         </ul>
                     </div>
                 </div>

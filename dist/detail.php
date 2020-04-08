@@ -24,6 +24,10 @@
         $pubemail = $rowforeign['email'];
     }
     $page = $row['judul']." Detail";
+
+    $getBorrowedBook = $dbConn -> prepare("SELECT * FROM buku, detailtransaksi, transaksi, siswa WHERE transaksi.idTransaksi = detailTransaksi.idTransaksi AND transaksi.nis = siswa.nis AND buku.idBuku = detailtransaksi.idBuku AND buku.idBUku = ".$idbuku);
+    $getBorrowedBook -> execute();
+    $getBorrowedBookCount = $getBorrowedBook -> rowCount();
 ?>
 <html>
     <head>    
@@ -52,17 +56,12 @@
         <!-- Main Content -->
         <div class="container-fluid">
             <div class="row p-0 m-0">
-                <div class="col-1 mt-5 text-center p-0 m-0 d-none d-md-block">                    
-                    <div style="margin-top:9rem;">
-                        <a href="?id=<?php echo $prev?>" role="button" class="btn btn-success"><i class="fa fa-angle-double-left" aria-hidden="true"></i> Prev</a>
-                    </div>
-                </div>
                 <div class="col-4 mt-5 text-center">                    
                     <div>
                         <img style="width:55%;" class="img img-thumbnail" src="../upload/book_cover/<?php echo $image;?>">
                     </div>
                 </div>
-                <div class="col-6 mt-5">
+                <div class="col-8 mt-5">
                     <div class="display-3"><?php echo $title;?></div>
                     <small class="text-muted">Writer: <?php echo $writer;?></small>
                     <div class="mt-2">
@@ -71,14 +70,12 @@
                     <div class="mt-2">
                         Current Available Stock: <?php echo $stock;?>
                     </div>
+                    <div class="mt-2 text-danger">
+                    <?php if($getBorrowedBookCount > 0){?><a class='text-danger' href="" data-toggle="modal" data-target="#borrowerView"><?php }?>Currently Borrowed: <?php echo $getBorrowedBookCount;?></a>
+                    </div>
                     <div class="mt-2">
                         Synopsis:<br><small class="text-muted text-justify"><?php echo $synopsis;?></small>
                     </div>                    
-                </div>
-                <div class="col-1 mt-5 text-center p-0 m-0 d-none d-md-block">                    
-                    <div style="margin-top:9rem;">
-                        <a href="?id=<?php echo $next?>" role="button" class="btn btn-success">Next <i class="fa fa-angle-double-right" aria-hidden="true"></i></a>
-                    </div>
                 </div>
             </div>
         </div>
@@ -123,5 +120,35 @@
             </div>
         </div>
         <!-- End Of View Publisher Modal -->
+
+        <!-- View Borrower Modal -->
+        <div class="modal fade" id="borrowerView" tabindex="-1" role="dialog" aria-labelledby="modalTitle" aria-hidden="true">
+            <div class="container-fluid">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header bg-primary text-white">
+                            <h5 class=" text-capitalize modal-title" id="modalTitle">Current Book's Borrower List</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <form id="detailForm">
+                            <input hidden type="text" class="form-control" name="Id" id="id">
+                            <fieldset disabled="disabled">
+                                <div class="modal-body">                                       
+                                    <div class="form-group">
+                                        <label for="inputName">Book's Borrower</label>
+                                        <?php foreach($getBorrowedBook as $borrowerData){?>
+                                        <input required type="text" class="form-control mb-1" name="Name" id="name" value="<?php echo $borrowerData['nama']?>">
+                                        <?php }?>
+                                    </div>
+                                </div>
+                            </fieldset>
+                        </form>
+                    </div>                
+                </div>
+            </div>
+        </div>
+        <!-- End Of View Borrower Modal -->
     </body>
 </html>

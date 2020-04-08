@@ -25,7 +25,7 @@
     $getPublisher->bindValue(':param', '%'.$searchword.'%', PDO::PARAM_STR);
     $getPublisher -> execute();
 
-    $getNewId = $dbConn -> prepare("SELECT MAX(idPenerbit) AS id FROM penerbit");
+    $getNewId = $dbConn -> prepare("SELECT MAX(idPenerbit DIV 1) AS id FROM penerbit");
     $getNewId -> execute();
     foreach($getNewId->fetchAll() as $totalRow){
         $newId = $totalRow['id'] + 1;
@@ -136,7 +136,7 @@
                                 <span aria-hidden="true">&times;</span>
                             </button>
                         </div>
-                        <form action="" method="POST" id="deleteForm">
+                        <form action="publisher.php?action=delete" method="POST" id="deleteForm">
                             <input hidden type="text" class="form-control" name="deleteId" id="id">
                             <fieldset disabled="disabled">
                                 <div class="modal-body">                                       
@@ -234,17 +234,17 @@
                                         }
                                         else {
                                             $link_prev = ($page > 1) ? $page - 1 : 1;
-                                            echo "<li class='page-item'><a class='page-link' href='publisher.php?page=1&search=$searchword'>First</a></li>";
-                                            echo "<li><a class='page-link' href='publisher.php?page=$link_prev&search=$searchword'>&laquo;</a></li>";
+                                            echo "<li class='page-item'><a class='page-link' href='publisher.php?page=1&search=$searchword&action='>First</a></li>";
+                                            echo "<li><a class='page-link' href='publisher.php?page=$link_prev&search=$searchword&action='>&laquo;</a></li>";
                                         }
                                         if ($page == $jumlah_page) {
                                             echo "<li class='disabled page-item'><a class='page-link' href='#'>&raquo;</a></li>";
-                                            echo "<li class='disabled page-item'><a class='page-link' href='publisher.php?page=$jumlah_page&search=$searchword'>Last</a></li>";
+                                            echo "<li class='disabled page-item'><a class='page-link' href='publisher.php?page=$jumlah_page&search=$searchword&action='>Last</a></li>";
                                         } 
                                         else {
                                             $link_next = ($page < $jumlah_page) ? $page + 1 : $jumlah_page;
-                                            echo "<li><a class='page-link' href='publisher.php?page=$link_next&search=$searchword'>&raquo;</a></li>";
-                                            echo "<li class='page-item'><a class='page-link' href='publisher.php?page=$jumlah_page&search=$searchword'>Last</a></li>";
+                                            echo "<li><a class='page-link' href='publisher.php?page=$link_next&search=$searchword&action='>&raquo;</a></li>";
+                                            echo "<li class='page-item'><a class='page-link' href='publisher.php?page=$jumlah_page&search=$searchword&action='>Last</a></li>";
                                         }
                                     }
                                 ?>
@@ -254,9 +254,42 @@
                 </div>
             </div>
         </footer>
-        <!--End Of Pagination-->
+        <!--End Of Pagination-->    
 
-    </body>
+        <!-- Warning Modal -->
+        <?php if($_GET['action'] =="delete"){?>
+            <div class="modal fade" id="onBookPublisher" tabindex="-1" role="dialog" aria-labelledby="modalTitle" aria-hidden="true">
+                <div class="container-fluid">
+                    <div class="modal-dialog modal-dialog-centered" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header bg-danger">
+                                <h5 class=" text-capitalize text-white modal-title" id="modalTitle">Delete Warning</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <form id="detailForm">
+                                <fieldset disabled="disabled">
+                                    <div class="modal-body">
+                                        <h6 class="text-danger mb-3">Please Either Change The Book's Publisher Or Delete Books Below Before Deleting</h6>
+                                        <?php 
+                                        $getOnBook = $dbConn -> prepare("SELECT * FROM buku, penerbit WHERE buku.idPenerbit = penerbit.idPenerbit AND penerbit.idPenerbit = ".$_POST['deleteId']);
+                                        $getOnBook -> execute();
+                                            foreach($getOnBook -> fetchAll() as $publishedBook){
+                                                echo"<div class='form-group'>";                                            
+                                                echo"    <input required type='text' class='form-control' value='".$publishedBook['judul']."'>";
+                                                echo"</div>";
+                                            }
+                                        ?>                                    
+                                </fieldset>
+                            </form>
+                        </div>                
+                    </div>
+                </div>
+            </div>
+            <?php }?>
+            <!-- End Of Warning Modal -->            
+    </body>    
 </html>
 
 <?php
@@ -274,11 +307,15 @@
         }       
     }
     if(isset($_POST['deleteSubmit'])){        
-        $idPublisher = $_POST['deleteId'];
-        $delete = $dbConn -> prepare("DELETE FROM penerbit WHERE idPenerbit = ".$idPublisher);                    
-        if($delete ->execute()){
-            echo "<script>alert('Publisher Has Been Successfully Deleted');</script>";
-            echo "<script>location.replace('publisher.php');</script>";
+        try{
+            $idPublisher = $_POST['deleteId'];
+            $delete = $dbConn -> prepare("DELETE FROM penerbit WHERE idPenerbit = ".$idPublisher);                    
+            if($delete ->execute()){
+                echo "<script>alert('Publisher Has Been Successfully Deleted');</script>";
+                echo "<script>location.replace('publisher.php');</script>";
+            }
+        }catch(PDOEXCEPTION $e){
+            echo "<script>$('#onBookPublisher').modal('show');</script> ";
         }
     }
     if(isset($_POST['editSubmit'])){

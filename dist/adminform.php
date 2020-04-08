@@ -25,7 +25,7 @@
         }
     }
 
-    $countId = $dbConn -> prepare("SELECT MAX(idPustakawan) AS id FROM login");
+    $countId = $dbConn -> prepare("SELECT MAX(idPustakawan DIV 1) AS id FROM login");
     $countId -> execute();
     $newId = $countId -> fetchAll();
     foreach ($newId as $newIdrow){
@@ -186,114 +186,116 @@
             </form>
         </div>
         <!-- End Of Main Content -->
+
+
     </body>
 </html>
 
 <?php
     if(isset($_POST['submit']) && $action != "delete"){        
-        if($_POST['password'] == $_POST['confirm']){ 
-            try{
-                $action = $_GET['action'];
-                $id = $_POST['id'];
-                $name = $_POST['name'];
-                $username = $_POST['username'];
-                $password = $_POST['password'];
-                $role = $_POST['role'];
-                $address = $_POST['address'];
-                $phone = $_POST['phone'];
-                $email = $_POST['email'];
-                if(!empty($_FILES['imageUser'])){
-                    $image_file = $_FILES['imageUser']['name'];                
-                    $type = $_FILES['imageUser']['type'];
-                    $size = $_FILES['imageUser']['size'];
-                    $temp = $_FILES['imageUser']['tmp_name'];    
-                    $path = "../upload/admin_avatar/".$image_file;
-                    if (!file_exists($path) || $action == "edit") {
-                        if($action == "edit" && !file_exists($path)){
-                            $oldImage = $_POST['oldImage'];
-                            unlink("../upload/admin_avatar/".$oldImage);
+        if($_POST['password'] == $_POST['confirm']){
+            $action = $_GET['action'];
+            $id = $_POST['id'];
+            $name = $_POST['name'];
+            $username = $_POST['username'];
+            $password = $_POST['password'];
+            $role = $_POST['role'];
+            $address = $_POST['address'];
+            $phone = $_POST['phone'];
+            $email = $_POST['email'];
+            if(!empty($_FILES['imageUser'])){
+                $image_file = $_FILES['imageUser']['name'];                
+                $type = $_FILES['imageUser']['type'];
+                $size = $_FILES['imageUser']['size'];
+                $temp = $_FILES['imageUser']['tmp_name'];    
+                $path = "../upload/admin_avatar/".$image_file;
+                if (!file_exists($path) || $action == "edit") {
+                    if($action == "edit" && !file_exists($path)){
+                        $oldImage = $_POST['oldImage'];
+                        unlink("../upload/admin_avatar/".$oldImage);
+                    }
+                    if ($size < 5000000) {                    
+                        if ($action == "add"){
+                            $sql = "INSERT INTO login values(:fid,:fusername,:fpassword,:frole)";       
+                            $sql2 = "INSERT INTO pustakawan values(:fid,:fname,:faddress,:fphone,:femail,:fimage)";
                         }
-                        if ($size < 5000000) {                    
-                            if ($action == "add"){
-                                $sql = "INSERT INTO login values(:fid,:fusername,:fpassword,:frole)";       
-                                $sql2 = "INSERT INTO pustakawan values(:fid,:fname,:faddress,:fphone,:femail,:fimage)";
+                        if ($action == "edit" && !file_exists($path)){
+                            $sql = "UPDATE login SET username=:fusername, password=:fpassword, hakUser=:frole WHERE idPustakawan=:fid";
+                            $sql2 = "UPDATE pustakawan SET nama=:fname, alamat=:faddress, phone=:fphone, email=:femail, image=:fimage WHERE idPustakawan=:fid";
+                        } else if ($action == "edit" && file_exists($path)){
+                            $sql = "UPDATE login SET username=:fusername, password=:fpassword, hakUser=:frole WHERE idPustakawan=:fid";
+                            $sql2 = "UPDATE pustakawan SET nama=:fname, alamat=:faddress, phone=:fphone, email=:femail WHERE idPustakawan=:fid";
+                        }                                                                 
+                        $query = $dbConn->prepare($sql);
+                        $query ->bindParam(':fid',$id);     
+                        $query ->bindParam(':fusername',$username);
+                        $query ->bindParam(':fpassword',$password);
+                        $query ->bindParam(':frole',$role);                                                            
+                        if ($query->execute()) {
+                            echo "query login execute";
+                            $query2 = $dbConn->prepare($sql2);
+                            $query2 ->bindParam(':fid',$id);     
+                            $query2 ->bindParam(':fname',$name);
+                            $query2 ->bindParam(':faddress',$address);
+                            $query2 ->bindParam(':fphone',$phone);
+                            $query2 ->bindParam(':femail',$email);
+                            if (!($action == "edit" && file_exists($path))){
+                                $query2 ->bindparam(':fimage',$image_file);
                             }
-                            if ($action == "edit" && !file_exists($path)){
-                                $sql = "UPDATE login SET username=:fusername, password=:fpassword, hakUser=:frole WHERE idPustakawan=:fid";
-                                $sql2 = "UPDATE pustakawan SET nama=:fname, alamat=:faddress, phone=:fphone, email=:femail, image=:fimage WHERE idPustakawan=:fid";
-                            } else if ($action == "edit" && file_exists($path)){
-                                $sql = "UPDATE login SET username=:fusername, password=:fpassword, hakUser=:frole WHERE idPustakawan=:fid";
-                                $sql2 = "UPDATE pustakawan SET nama=:fname, alamat=:faddress, phone=:fphone, email=:femail WHERE idPustakawan=:fid";
-                            }                                                                 
-                            $query = $dbConn->prepare($sql);
-                            $query ->bindParam(':fid',$id);     
-                            $query ->bindParam(':fusername',$username);
-                            $query ->bindParam(':fpassword',$password);
-                            $query ->bindParam(':frole',$role);                                                            
-                            if ($query->execute()) {
-                                echo "query login execute";
-                                $query2 = $dbConn->prepare($sql2);
-                                $query2 ->bindParam(':fid',$id);     
-                                $query2 ->bindParam(':fname',$name);
-                                $query2 ->bindParam(':faddress',$address);
-                                $query2 ->bindParam(':fphone',$phone);
-                                $query2 ->bindParam(':femail',$email);
-                                if (!($action == "edit" && file_exists($path))){
-                                    $query2 ->bindparam(':fimage',$image_file);
+                            if($query2->execute()){
+                                move_uploaded_file($temp, "../upload/admin_avatar/".$image_file);
+                                if (headers_sent()) {
+                                    die("<script> location.replace('admin.php'); </script>");
                                 }
-                                if($query2->execute()){
-                                    move_uploaded_file($temp, "../upload/admin_avatar/".$image_file);
-                                    if (headers_sent()) {
-                                        die("<script> location.replace('admin.php'); </script>");
-                                    }
-                                    else{
-                                        exit(header("Location: admin.php"));
-                                    }
+                                else{
+                                    exit(header("Location: admin.php"));
                                 }
-                                else {
-                                    echo "<script> alert('There's An Error While Inserting Data. Please Try Again'); </script>";
-                                }                      
                             }
                             else {
-                                echo "<script> alert('There's An Error While Inserting Data. Please Try Again'); </script>";
-                            }
+                                echo "<script> alert('There is An Error While Inserting Data. Please Try Again'); </script>";
+                            }                      
+                        }
+                        else {
+                            echo "<script> alert('There is An Error While Inserting Data. Please Try Again'); </script>";
                         }
                     }
-                    else {
-                        echo "<script> alert('Image File With That Name Is Already Existed'); </script>";
-                    }
                 }
-                else{
-                    echo "<script> alert('Kosong Gambarnya'); </script>";
+                else {
+                    echo "<script> alert('Image File With That Name Is Already Existed'); </script>";
                 }
             }
-            catch(PDOEXCEPTION $e){
-                echo $e->getMessage();
+            else{
+                echo "<script> alert('Kosong Gambarnya'); </script>";
             }
         }
         else{
-            echo "<script> alert('Your Password Didn't Match'); </script>";
+            echo "<script> alert('Your Password Didnt Match'); </script>";
         }
     }
     if(isset($_POST['submit']) && $action == "delete"){
         $action = $_GET['action'];
         if($action == "delete") {
-            $getImage = $dbConn ->prepare("SELECT image FROM pustakawan WHERE idPustakawan=".$_GET['userid']);
-            $getImage ->execute();
-            foreach($getImage->fetchAll() as $deletedRow){
-                unlink("../upload/admin_avatar/".$deletedRow['image']);
-            }
-            $query = $dbConn->prepare("DELETE FROM pustakawan WHERE idPustakawan=".$_GET['userid']);
-            $query2 = $dbConn->prepare("DELETE FROM login WHERE idPustakawan=".$_GET['userid']);
-            if($query ->execute()){
-                if($query2 ->execute()){
-                    if (headers_sent()) {
-                        die("<script> location.replace('admin.php'); </script>");
-                    }
-                    else{
-                        exit(header("Location: admin.php"));
+            try{
+                $getImage = $dbConn ->prepare("SELECT image FROM pustakawan WHERE idPustakawan=".$_GET['userid']);
+                $getImage ->execute();
+                foreach($getImage->fetchAll() as $deletedRow){
+                    unlink("../upload/admin_avatar/".$deletedRow['image']);
+                }
+                $query = $dbConn->prepare("DELETE FROM pustakawan WHERE idPustakawan=".$_GET['userid']);
+                $query2 = $dbConn->prepare("DELETE FROM login WHERE idPustakawan=".$_GET['userid']);
+                if($query ->execute()){
+                    if($query2 ->execute()){
+                        if (headers_sent()) {
+                            die("<script> location.replace('admin.php'); </script>");
+                        }
+                        else{
+                            exit(header("Location: admin.php"));
+                        }
                     }
                 }
+            }
+            catch(PDOEXCEPTION $e){
+
             }
         }
     }

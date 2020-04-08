@@ -228,6 +228,46 @@
             </form>
         </div>
         <!-- End Of Main Content -->
+
+        <!-- Warning Modal -->
+        <?php if($_GET['action'] =="delete"){?>
+            <div class="modal fade" id="onTransactionStudent" tabindex="-1" role="dialog" aria-labelledby="modalTitle" aria-hidden="true">
+                <div class="container-fluid">
+                    <div class="modal-dialog modal-dialog-centered" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header bg-danger">
+                                <h5 class=" text-capitalize text-white modal-title" id="modalTitle">Delete Warning</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <form id="detailForm">
+                                <fieldset disabled="disabled">
+                                    <div class="modal-body">
+                                        <h6 class="text-danger mb-3">Please Finish All This Transaction Below Before Deleting</h6>
+                                        <?php 
+                                        $getOnTransaction = $dbConn -> prepare("SELECT * FROM buku, detailtransaksi, transaksi, siswa WHERE buku.idBuku = detailtransaksi.idBuku AND transaksi.idTransaksi = detailtransaksi.idTransaksi AND siswa.nis = transaksi.nis AND siswa.nis = ".$_GET['nis']);
+                                        $getOnTransaction -> execute();
+                                            foreach($getOnTransaction -> fetchAll() as $transactionStudent){
+                                                $getLibrarian = $dbConn -> prepare("SELECT * FROM pustakawan WHERE idPustakawan = ".$transactionStudent['idPustakawan']);
+                                                $getLibrarian -> execute();
+                                                foreach($getLibrarian as $librarianData)
+                                                echo"<div class='form-group'>";                                            
+                                                echo"    <input type='text' class='form-control' value='".$transactionStudent['nama']." - ".$transactionStudent['nis']."'>";
+                                                echo"    <small class='text-muted'>(Transaction ID: ".$transactionStudent['idTransaksi'].")</small>";
+                                                echo"    <small class='form-text text-muted hidden'>".$transactionStudent['tglPinjam']."</small>";
+                                                echo"    <small class='form-text text-muted hidden'>".$librarianData['nama']."</small>";
+                                                echo"</div>";
+                                            }
+                                        ?>                                    
+                                </fieldset>
+                            </form>
+                        </div>                
+                    </div>
+                </div>
+            </div>
+            <?php }?>
+            <!-- End Of Warning Modal -->   
     </body>
 </html>
 
@@ -309,20 +349,24 @@
     if(isset($_POST['submit']) && $action == "delete"){
         $action = $_GET['action'];
         if($action == "delete") {
-            $getImage = $dbConn ->prepare("SELECT image FROM siswa WHERE nis=".$_GET['nis']);
-            $getImage ->execute();
-            foreach($getImage->fetchAll() as $deletedRow){
-                
-            }
-            $query = $dbConn->prepare("DELETE FROM siswa WHERE nis=".$_GET['nis']);
-            if($query ->execute()){
-                unlink("../upload/student_avatar/".$deletedRow['image']);
-                if (headers_sent()) {
-                    die("<script> location.replace('studentlist.php'); </script>");
+            try{
+                $getImage = $dbConn ->prepare("SELECT image FROM siswa WHERE nis=".$_GET['nis']);
+                $getImage ->execute();
+                foreach($getImage->fetchAll() as $deletedRow){
+                    
                 }
-                else{
-                    exit(header("Location: studentlist.php"));
+                $query = $dbConn->prepare("DELETE FROM siswa WHERE nis=".$_GET['nis']);
+                if($query ->execute()){
+                    unlink("../upload/student_avatar/".$deletedRow['image']);
+                    if (headers_sent()) {
+                        die("<script> location.replace('studentlist.php'); </script>");
+                    }
+                    else{
+                        exit(header("Location: studentlist.php"));
+                    }
                 }
+            }catch(PDOEXCEPTION $e){
+                echo "<script>$('#onTransactionStudent').modal('show');</script> ";
             }
         }
     }
