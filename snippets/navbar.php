@@ -23,10 +23,6 @@
                                 </div>
                             </form>";
             }
-            if(basename($_SERVER['PHP_SELF']) == 'dashboard.php') {                
-                $html .="   <div class='ml-auto mt-md-0'>
-                                <a role='button' href='profile.php' class='btn btn-outline-warning my-2 my-sm-0' type='submit'>Edit Profile</a>";
-            }
             if(isset($_SESSION['login']) && $_SESSION['login']){
                 if(basename($_SERVER['PHP_SELF']) == 'booklist.php' || basename($_SERVER['PHP_SELF']) == 'studentlist.php' || basename($_SERVER['PHP_SELF']) == 'booklist.php' || basename($_SERVER['PHP_SELF']) == 'publisher.php' || basename($_SERVER['PHP_SELF']) == 'admin.php' || basename($_SERVER['PHP_SELF']) == 'transactionlist.php' || basename($_SERVER['PHP_SELF']) == 'report.php'){
                     $mlstyle = "2";

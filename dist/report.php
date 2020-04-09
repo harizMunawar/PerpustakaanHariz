@@ -77,7 +77,8 @@
                         echo"                           <small class='form-text text-danger ml-3 mb-n1'>Penalty: ".(1000 * ($daysBorrowed -> format ('%a%') - 3))."</small>";
                         }
                         echo"                           <small class='form-text text-muted ml-3 mb-2'>Librarian In Charge: ".$dataLibrarian['nama']."</small>";
-                        echo"                           <a href='transactionform.php?action=finish&idtr=".$dataTransaction['idTransaksi']."' type='button' class='btn-sm btn-danger ml-3'>Finish</a>";
+                        echo"                           <a href='transactionform.php?action=edit&idtr=".$dataTransaction['idTransaksi']."&penalty=".(1000 * ($daysBorrowed -> format ('%a%') - 3))."' type='button' class='btn-sm btn-warning ml-3'>Edit</a>";
+                        echo"                           <a href='transactionform.php?action=delete&idtr=".$dataTransaction['idTransaksi']."&penalty=".(1000 * ($daysBorrowed -> format ('%a%') - 3))."' type='button' class='btn-sm btn-danger'>Delete</a>";
                         echo"                        </div>";
                         echo"                    </div>";
                         echo"                </div>";                                                        

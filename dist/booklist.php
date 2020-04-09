@@ -82,8 +82,8 @@
                     $no = $limit_start + 1;
                     $total = $result -> rowCount();
                     while ($row = $result -> fetch(PDO::FETCH_ASSOC)){
-                        echo "<tr class='items' data-href='detail.php?id=".$row['idBuku']."' border='0'>";   
-                        echo "<th class='d-none d-md-table-cell' style='max-width: 200px;' name='idBuku' value=".$row['idBuku']."><img class='img-thumbnail img-fluid' src='../upload/book_cover/".$row['image']."'></th>";                     
+                        echo "<tr class='items' data-href='detail.php?id=".$row['idBuku']."&type=book' border='0'>";   
+                        echo "<th class='d-none d-md-table-cell' style='max-width: 200px;' name='idBuku'><img class='img-thumbnail img-fluid' src='../upload/book_cover/".$row['image']."'></th>";                     
                         echo "<td>".$row['judul']."</td>";
                         echo "<td>".$row['penulis']."</td>";
                         $selectForeign = "SELECT penerbit.nama, kategori.kategoriBuku FROM penerbit, kategori WHERE idPenerbit=".$row['idPenerbit']." AND idKategori=".$row['idKategori'];
@@ -154,14 +154,13 @@
                 </div>
             </div>
         </footer>
-        <!--End Of Pagination-->
-
-        <script>
-            $(document).ready(function() {
-                $(document.body).on("click", "tr[data-href]", function () {
-                    window.location.href = this.dataset.href;
-                });
-            });
-        </script>
+        <!--End Of Pagination-->        
     </body>
 </html>
+<script>
+    $(document).ready(function() {
+        $(document.body).on("click", "tr[data-href]", function () {
+            window.location.href = this.dataset.href;
+        });
+    });
+</script>

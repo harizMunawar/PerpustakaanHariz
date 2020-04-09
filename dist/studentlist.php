@@ -16,7 +16,8 @@
     $searchword = "";
     if(isset($_GET['search'])){
         $searchword = $_GET['search'];
-    }
+    }    
+
     $getStudent = $dbConn -> prepare("SELECT * FROM siswa WHERE nis LIKE :param OR nama LIKE :param OR alamat LIKE :param OR jurusan LIKE :param OR tingkat LIKE :param OR kelas LIKE :param OR phone LIKE :param OR email LIKE :param ORDER BY nama LIMIT ".$limit_start.",".$limit);
     $getStudent->bindValue(':param', '%'.$searchword.'%', PDO::PARAM_STR);
     $getStudent -> execute();
@@ -70,14 +71,14 @@
                 <?php             
                 foreach($getStudent -> fetchAll() as $dataStudent){
                     echo "<tr border='0'>";
-                    echo "  <td style='max-width: 90px;' class='d-none d-md-table-cell'><img class='img-thumbnail img-fluid' src='../upload/student_avatar/".$dataStudent['image']."'></td>";
+                    echo "  <td style='max-width: 90px;' class='d-none d-md-table-cell'><a><img class='img-thumbnail img-fluid' src='../upload/student_avatar/".$dataStudent['image']."'></td>";
                     echo "  <td>".$dataStudent['nis']."</td>";
                     echo "  <td>".$dataStudent['nama']."</td>";
                     echo "  <td>".$dataStudent['tingkat']." ".$dataStudent['jurusan']." ".$dataStudent['kelas']."</td>";
                     echo "  <td>".$dataStudent['alamat']."</td>";
                     echo "  <td class='d-none d-lg-table-cell'>".$dataStudent['phone']."</td>";
                     echo "  <td class='d-none d-lg-table-cell'>".$dataStudent['email']."</td>";                    
-                    echo "  <td><a name='' id='' class='btn-sm btn-warning mr-1' href='studentform.php?action=edit&nis=".$dataStudent['nis'] ."' role='button'>Edit</a><a name='' id='' class='btn-sm btn-danger' href='studentform.php?action=delete&nis=".$dataStudent['nis'] ."' role='button'>Delete</a></td>";
+                    echo "  <td><a name='' id='' class='btn-sm btn-warning mr-1' href='studentform.php?action=edit&nis=".$dataStudent['nis'] ."' role='button'>Edit</a><a name='' id='' class='btn-sm btn-danger mr-1' href='studentform.php?action=delete&nis=".$dataStudent['nis'] ."' role='button'>Delete</a><a href='detail.php?id=".$dataStudent['nis']."&type=student' class='btn-sm btn-success text-white'>Detail</a></td>";
                     echo "</tr>";
                     $no++;
                 }
@@ -132,14 +133,55 @@
                 </div>
             </div>
         </footer>
-        <!--End Of Pagination-->        
+        <!--End Of Pagination-->  
+
+        <!-- View Borrowed Modal -->
+        <div class="modal fade" id="bookBorrowed" tabindex="-1" role="dialog" aria-labelledby="modalTitle" aria-hidden="true">
+            <div class="container-fluid">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header bg-success text-white">
+                            <h5 class=" text-capitalize modal-title" id="modalTitle">Student Who Have Borrowed This Book</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <form id="detailForm">
+                            <input type="text" class="form-control" name="Id" id="id" value="">
+                            <fieldset disabled="disabled">
+                                <div class="modal-body">                                       
+                                    <div class="form-group">
+                                        <label for="inputName">Book's Borrowing History</label>                                        
+                                        <?php 
+                                            
+                                            $getHistory = $dbConn -> prepare("SELECT * FROM buku, detailtransaksi, transaksi, siswa WHERE transaksi.idTransaksi = detailTransaksi.idTransaksi AND transaksi.nis = siswa.nis AND buku.idBuku = detailtransaksi.idBuku AND detailTransaksi.status = 1 AND siswa.nis = ".$_GET['nis']);
+                                            $getHistory -> execute();
+                                            $getHistoryCount = $getHistory -> rowCount();
+                                            foreach($getHistory as $historyData){
+                                        ?>
+                                        <input required type="text" class="form-control mb-1" name="Name" id="name" value="<?php echo $historyData['nama']." at ".$historyData['tglPinjam']?>">
+                                        <small class="text-muted"><?php echo $historyData['nis']?></small>
+                                        <?php }?>
+                                    </div>
+                                </div>
+                            </fieldset>
+                        </form>
+                    </div>                
+                </div>
+            </div>
+        </div>
+        <!-- End Of View Borrowed Modal -->      
     </body>
 </html>
 
 <script>
-    $(document).ready(function() {
-        $(document.body).on("click", "tr[data-href]", function () {
-            window.location.href = this.dataset.href;
-        });
+    // $(document).ready(function() {
+    //     $(document.body).on("click", "tr[data-href]", function () {
+    //         window.location.href = this.dataset.href;
+    //     });
+    // });
+
+    $('#bookBorrowed').on('show.bs.modal', function(e) {
+        var nis = e.relatedTarget.dataset.nis;
     });
 </script>

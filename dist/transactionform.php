@@ -8,10 +8,14 @@
     $id = $_SESSION['id'];
     $action = $_GET['action'];
 
-    if($action == "finish"){
+    if($action != "add"){
         $getTransaction = $dbConn -> prepare("SELECT * FROM siswa, transaksi, detailtransaksi, buku WHERE siswa.nis = transaksi.nis AND transaksi.idTransaksi = detailtransaksi.idTransaksi AND detailtransaksi.idBuku = buku.idBuku AND transaksi.idTransaksi = ".$_GET['idtr']);        
         $getTransaction -> execute();
         foreach($getTransaction as $transactionData);
+
+        if($action != "finish"){
+            $penalty = $_GET['penalty'];
+        }
     }
     require("../snippets/navbar.php");
     $pageName = "Transaction Form";    
@@ -57,14 +61,16 @@
             <center>            
                 <h1 class="display-4 bold">Do A Transaction</h1>
             <?php if($action == 'add'){?>
-                <a href="transactionform.php?transaction=add" type="button" class="btn btn-primary mr-1 mt-1"><i class="fa fa-plus" aria-hidden="true"></i> Make New</a>                    
+                <a href="transactionform.php?transaction=add" type="button" class="btn btn-primary mr-1 mt-1"><i class="fa fa-plus" aria-hidden="true"></i> Make New</a>
+            <?php }else if($action=="edit" || $action=="delete"){?>
+                <a href="report.php" type="button" class="btn btn-primary mr-1 mt-1"><i class="fa fa-folder" aria-hidden="true"></i> Report</a>
             <?php }?>
-                <a href="transactionlist.php" type="button" class="btn btn-primary ml-1 mt-1">See All <i class="fa fa-eye" aria-hidden="true"></i></a>
+                <a href="transactionlist.php" type="button" class="btn btn-primary ml-1 mt-1">Unfinished Transaction <i class="fa fa-eye" aria-hidden="true"></i></a>
             </center>
             
             <div class="row">
                 <div class="col">
-                    <form action="transactionform.php?action=<?php echo $action;?><?php if($action=="finish"){?>&idtr=<?php echo $_GET['idtr'];}?>" method="post">
+                    <form action="transactionform.php?action=<?php echo $action;?><?php if($action!="add"){?>&idtr=<?php echo $_GET['idtr'];}if($action=="edit" || $action=="delete"){?>&penalty=<?php echo $_GET['penalty'];}?>" method="post">
                         <div class="form-group">                            
                             <label for="inputLibrarian">Librarian In Charge</label>
                             <input disabled type="text" class="form-control" name="librarian" id="inputLibrarian" value="<?php echo $data['nama'];?>">
@@ -99,15 +105,15 @@
                                         <input required disabled type="date" class="form-control" name="date" id="inputDate" value="<?php echo $transactionData['tglPinjam'];?>">                                    
                                     <?php }?>
                                 </div>   
-                                <?php if ($action == "finish"){?>
+                                <?php if ($action != "add"){?>
                                     <div class="col">
-                                        <label for="inputDate">Returned Date</label>
-                                        <input required type="date" class="form-control " min="<?php echo $transactionData['tglPinjam']?>" name="return" id="returnDate">
+                                        <label for="inputDate">Returned Date</label>                                        
+                                        <input <?php if($action=="delete") echo "disabled";?> required type="date" class="form-control " min="<?php echo $transactionData['tglPinjam']?>" name="return" id="returnDate" value="<?php if($action!="finish") echo $transactionData['tglKembali'];?>">
                                         <small id="dateHelp" class="form-text text-muted hidden">You Can't Enter Date That Is Less Than Borrowed Date</small>
                                     </div>
                                     <div class="col">
-                                        <label for="inputDate">Penalty</label>
-                                        <input disabled type="text" class="form-control " name="penalty" id="penaltyField" value="0">
+                                        <label for="inputDate">Penalty</label>                                        
+                                        <input disabled type="text" class="form-control " name="penalty" id="penaltyField" value="<?php if($action!="finish" && $penalty>0) echo $penalty;else echo 0?>">
                                         <small id="dateHelp" class="form-text text-muted hidden">You'll Get Penalty If You Borrowed Book More Than 3 Days</small>
                                     </div>
                                 <?php }?>
@@ -149,7 +155,12 @@
                             <small id="book1Help" class="form-text text-muted hidden">Second Borrowed Book Title (Leave It Alone If You Only Want To Borrow One Book)</small>
                         </div>
                         <?php }?>
-                        <input type="submit" class="btn btn-primary" name="submit" value="Submit">
+                        <?php if($action == "delete"){?>
+                            <input type="submit" class="btn btn-danger" name="submit" value="Delete">
+                        <?php }else{?>
+                            <input type="submit" class="btn btn-primary" name="submit" value="Submit">
+                        <?php }?>
+                        
                     </form>
                 </div>
             </div>
@@ -215,7 +226,6 @@
         $idtr = $_GET['idtr'];
         $bookid = $_POST['returnbook1'];
         $returnDate = $_POST['return'];
-        echo $returnDate;
         $returnBook = $dbConn -> prepare("UPDATE detailTransaksi SET tglKembali = '".$returnDate."', status = 1 WHERE idTransaksi = ".$idtr);
         if($returnBook -> execute()){
             $updateBook = $dbConn -> prepare("UPDATE buku SET qty=qty+1 WHERE idBuku=(SELECT buku.idBuku FROM buku, detailtransaksi, transaksi WHERE buku.idBuku = detailtransaksi.idBuku AND transaksi.idTransaksi = detailtransaksi.idTransaksi AND buku.idBuku = ".$bookid." AND transaksi.idTransaksi = ".$idtr.")");
@@ -229,6 +239,31 @@
             }
         }
     }
+    if(isset($_POST['submit']) && $action == "edit"){
+        $idtr = $_GET['idtr'];
+        $returnDate = $_POST['return'];
+        $returnBook = $dbConn -> prepare("UPDATE detailTransaksi SET tglKembali = '".$returnDate."' WHERE idTransaksi = ".$idtr);
+        if($returnBook -> execute()){            
+            if (headers_sent()) {
+                die("<script> location.replace('transactionlist.php'); </script>");
+            }
+            else{
+                exit(header("Location: transactionlist.php"));
+            }            
+        }
+    }
+    if(isset($_POST['submit']) && $action == "delete"){
+        $idtr = $_GET['idtr'];
+        $deleteTransaction = $dbConn -> prepare("DELETE FROM transaksi WHERE idTransaksi = ".$idtr);
+        if($deleteTransaction -> execute()){            
+            if (headers_sent()) {
+                die("<script> location.replace('transactionlist.php'); </script>");
+            }
+            else{
+                exit(header("Location: transactionlist.php"));
+            }            
+        }
+    }
 ?>
 <script>
     $(function(){
@@ -237,7 +272,7 @@
         });
     });
 </script>
-<?php if($action == "finish"){?>
+<?php if($action != "add"){?>
 <script>
     function CustomValidation(input) {
         this.invalidities = [];

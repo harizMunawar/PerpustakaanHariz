@@ -52,6 +52,7 @@
             <center class="mb-5">                        
                 <h1 class="display-4 bold">Do A Transaction</h1>
                 <a href="transactionform.php?action=add" type="button" class="btn btn-primary mr-1 mt-1"><i class="fa fa-plus" aria-hidden="true"></i> Make New</a>                    
+                <a href="report.php" type="button" class="btn btn-primary mr-1 mt-1"><i class="fa fa-folder" aria-hidden="true"></i> Report</a>
                 <a href="transactionlist.php" type="button" class="btn btn-primary ml-1 mt-1">See All <i class="fa fa-eye" aria-hidden="true"></i></a>
             </center>
             <?php

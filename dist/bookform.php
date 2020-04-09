@@ -210,7 +210,7 @@
                         <form id="detailForm">
                             <fieldset disabled="disabled">
                                 <div class="modal-body">
-                                    <h6 class="text-danger mb-3">Please Finish All Transaction Below Before Deleting This Book</h6>
+                                    <h6 class="text-danger mb-3">Please Finish And Delete All Transaction Below Before Deleting This Book</h6>
                                     <?php 
                                         foreach($getBorrowedBook -> fetchAll() as $borrowedBook){
                                             $getLibrarian = $dbConn -> prepare("SELECT * FROM pustakawan WHERE idPustakawan = ".$borrowedBook['idPustakawan']);
