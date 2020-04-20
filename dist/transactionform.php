@@ -201,7 +201,7 @@
                             $insertDetail2 -> bindparam(":fidbuku",$bookid2);
                             if($insertDetail2 -> execute()){
                                 $updateBook2 = $dbConn ->prepare("UPDATE buku SET qty=qty-1 WHERE idBuku=$bookid2");
-                                if($updateBook1 -> execute()){
+                                if($updateBook2 -> execute()){
                                     if (headers_sent()) {
                                         die("<script> location.replace('transactionlist.php'); </script>");
                                     }else{
