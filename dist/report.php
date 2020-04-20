@@ -8,7 +8,7 @@
     if(isset($_GET['search'])){
         $searchword = $_GET['search'];
     }
-    $getDate = $dbConn -> prepare("SELECT transaksi.tglPinjam FROM transaksi, detailTransaksi WHERE transaksi.idTransaksi = detailTransaksi.idTransaksi AND detailTransaksi.status = 1 GROUP BY transaksi.tglPinjam DESC");    
+    $getDate = $dbConn -> prepare("SELECT transaksi.tglPinjam FROM transaksi, detailtransaksi WHERE transaksi.idTransaksi = detailtransaksi.idTransaksi AND detailtransaksi.status = 1 GROUP BY transaksi.tglPinjam DESC");    
     $getDate -> execute();
     $getDateCount = $getDate -> rowCount();
 ?>
@@ -46,7 +46,7 @@
                     echo"            <nav class='card-header bg-gray sticky-top'>";
                     echo"                <div class='text-white'>".$getDate['tglPinjam']."</div>";
                     echo"            </nav>";                                                            
-                    $getTransaction = $dbConn -> prepare("SELECT * FROM pustakawan, siswa, transaksi, detailtransaksi, buku WHERE siswa.nis = transaksi.nis AND transaksi.idTransaksi = detailtransaksi.idTransaksi AND detailtransaksi.idBuku = buku.idBuku AND transaksi.idPustakawan = pustakawan.idPustakawan AND transaksi.tglPinjam = '".$getDate['tglPinjam']."' AND detailTransaksi.status = 1 AND(siswa.nama LIKE :param OR siswa.nis LIKE :param OR siswa.tingkat LIKE :param OR siswa.jurusan LIKE :param OR siswa.kelas LIKE :param OR buku.judul LIKE :param OR transaksi.idTransaksi LIKE :param OR transaksi.tglPinjam LIKE :param OR pustakawan.nama LIKE :param OR DATEDIFF(detailTransaksi.tglKembali, transaksi.tglPinjam) LIKE :param OR (1000 * (DATEDIFF(detailTransaksi.tglKembali, transaksi.tglPinjam) - 3)) LIKE :param)");
+                    $getTransaction = $dbConn -> prepare("SELECT * FROM pustakawan, siswa, transaksi, detailtransaksi, buku WHERE siswa.nis = transaksi.nis AND transaksi.idTransaksi = detailtransaksi.idTransaksi AND detailtransaksi.idBuku = buku.idBuku AND transaksi.idPustakawan = pustakawan.idPustakawan AND transaksi.tglPinjam = '".$getDate['tglPinjam']."' AND detailtransaksi.status = 1 AND(siswa.nama LIKE :param OR siswa.nis LIKE :param OR siswa.tingkat LIKE :param OR siswa.jurusan LIKE :param OR siswa.kelas LIKE :param OR buku.judul LIKE :param OR transaksi.idTransaksi LIKE :param OR transaksi.tglPinjam LIKE :param OR pustakawan.nama LIKE :param OR DATEDIFF(detailtransaksi.tglKembali, transaksi.tglPinjam) LIKE :param OR (1000 * (DATEDIFF(detailTransaksi.tglKembali, transaksi.tglPinjam) - 3)) LIKE :param)");
                     $getTransaction->bindValue(':param', '%'.$searchword.'%', PDO::PARAM_STR);
                     $getTransaction -> execute();                                                            
                     foreach($getTransaction -> fetchAll() as $dataTransaction){
