@@ -26,10 +26,10 @@
             $pubemail = $rowforeign['email'];
         }
         $page = $row['judul']." Detail";
-        $getBorrowedBook = $dbConn -> prepare("SELECT * FROM buku, detailtransaksi, transaksi, siswa WHERE transaksi.idTransaksi = detailTransaksi.idTransaksi AND transaksi.nis = siswa.nis AND buku.idBuku = detailtransaksi.idBuku AND detailTransaksi.status = 0 AND buku.idBUku = ".$id);
+        $getBorrowedBook = $dbConn -> prepare("SELECT * FROM buku, detailtransaksi, transaksi, siswa WHERE transaksi.idTransaksi = detailtransaksi.idTransaksi AND transaksi.nis = siswa.nis AND buku.idBuku = detailtransaksi.idBuku AND detailtransaksi.status = 0 AND buku.idBuku = ".$id);
         $getBorrowedBook -> execute();
         $getBorrowedBookCount = $getBorrowedBook -> rowCount();
-        $getHistory = $dbConn -> prepare("SELECT * FROM buku, detailtransaksi, transaksi, siswa WHERE transaksi.idTransaksi = detailTransaksi.idTransaksi AND transaksi.nis = siswa.nis AND buku.idBuku = detailtransaksi.idBuku AND detailTransaksi.status = 1 AND buku.idBUku = ".$id);
+        $getHistory = $dbConn -> prepare("SELECT * FROM buku, detailtransaksi, transaksi, siswa WHERE transaksi.idTransaksi = detailtransaksi.idTransaksi AND transaksi.nis = siswa.nis AND buku.idBuku = detailtransaksi.idBuku AND detailtransaksi.status = 1 AND buku.idBuku = ".$id);
         $getHistory -> execute();
         $getHistoryCount = $getHistory -> rowCount();
     }
@@ -40,7 +40,7 @@
         $title = $studentData['nama'];
         $page = $studentData['nama']." Detail";
 
-        $getHistory = $dbConn -> prepare("SELECT * FROM buku, detailtransaksi, transaksi, siswa WHERE transaksi.idTransaksi = detailTransaksi.idTransaksi AND transaksi.nis = siswa.nis AND buku.idBuku = detailtransaksi.idBuku AND detailTransaksi.status = 1 AND siswa.nis = ".$id);
+        $getHistory = $dbConn -> prepare("SELECT * FROM buku, detailtransaksi, transaksi, siswa WHERE transaksi.idTransaksi = detailtransaksi.idTransaksi AND transaksi.nis = siswa.nis AND buku.idBuku = detailtransaksi.idBuku AND detailtransaksi.status = 1 AND siswa.nis = ".$id);
         $getHistory -> execute();
     }
 ?>
