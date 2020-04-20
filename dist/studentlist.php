@@ -154,7 +154,7 @@
                                         <label for="inputName">Book's Borrowing History</label>                                        
                                         <?php 
                                             
-                                            $getHistory = $dbConn -> prepare("SELECT * FROM buku, detailtransaksi, transaksi, siswa WHERE transaksi.idTransaksi = detailTransaksi.idTransaksi AND transaksi.nis = siswa.nis AND buku.idBuku = detailtransaksi.idBuku AND detailTransaksi.status = 1 AND siswa.nis = ".$_GET['nis']);
+                                            $getHistory = $dbConn -> prepare("SELECT * FROM buku, detailtransaksi, transaksi, siswa WHERE transaksi.idTransaksi = detailtransaksi.idTransaksi AND transaksi.nis = siswa.nis AND buku.idBuku = detailtransaksi.idBuku AND detailtransaksi.status = 1 AND siswa.nis = ".$_GET['nis']);
                                             $getHistory -> execute();
                                             $getHistoryCount = $getHistory -> rowCount();
                                             foreach($getHistory as $historyData){
