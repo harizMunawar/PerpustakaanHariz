@@ -242,7 +242,7 @@
     if(isset($_POST['submit']) && $action == "edit"){
         $idtr = $_GET['idtr'];
         $returnDate = $_POST['return'];
-        $returnBook = $dbConn -> prepare("UPDATE detailTransaksi SET tglKembali = '".$returnDate."' WHERE idTransaksi = ".$idtr);
+        $returnBook = $dbConn -> prepare("UPDATE detailtransaksi SET tglKembali = '".$returnDate."' WHERE idTransaksi = ".$idtr);
         if($returnBook -> execute()){            
             if (headers_sent()) {
                 die("<script> location.replace('transactionlist.php'); </script>");
