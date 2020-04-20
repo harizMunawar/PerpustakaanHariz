@@ -105,11 +105,11 @@
                 <!-- Manage Transaction -->
                 <?php 
                 if ($role == 'Librarian') {
-                    $getUnfinishedTransaction = $dbConn -> prepare("SELECT * FROM detailTransaksi WHERE detailTransaksi.status=0");
+                    $getUnfinishedTransaction = $dbConn -> prepare("SELECT * FROM detailtransaksi WHERE detailtransaksi.status=0");
                     $getUnfinishedTransaction -> execute();
                     $getUnfinishedTransactionCount = $getUnfinishedTransaction -> rowCount();
                     
-                    $getMyTransaction = $dbConn -> prepare("SELECT * FROM transaksi, detailTransaksi WHERE transaksi.idTransaksi = detailTransaksi.idTransaksi AND transaksi.idPustakawan = ".$_SESSION['id']." AND detailTransaksi.status = 0");
+                    $getMyTransaction = $dbConn -> prepare("SELECT * FROM transaksi, detailtransaksi WHERE transaksi.idTransaksi = detailtransaksi.idTransaksi AND transaksi.idPustakawan = ".$_SESSION['id']." AND detailtransaksi.status = 0");
                     $getMyTransaction -> execute();
                     $getMyTransactionCount = $getMyTransaction -> rowCount();
                 ?>
